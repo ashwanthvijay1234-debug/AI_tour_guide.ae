@@ -1,0 +1,272 @@
+<!doctype html>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  index.html  —  THE LANDING PAGE (start here)
+
+  This is the public home page: the hero, an explanation of what
+  the project is, the feature list, the impact section and the
+  FAQ. Open this file first when showing the project.
+
+  The actual working app is studio.html — every "Open the studio"
+  button on this page links there.
+
+  WHERE THE REST OF THE CODE LIVES
+    css/tokens.css    colours, fonts, spacing        (SHARED)
+    css/base.css      reset + control styling        (SHARED)
+    css/index.css     this page's own styling
+    js/index.js       this page's own behaviour
+    assets/photo.jpg  the photograph near the bottom
+
+  This file holds ONLY the HTML structure — there is no <style>
+  block and no inline JavaScript any more. That is deliberate:
+  markup lives here, styling in css/, behaviour in js/.
+  ═══════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI_tour_guide.ae — Smart UAE AI Tourism Assistant</title>
+<meta name="description" content="AI_tour_guide.ae — a Smart UAE AI Tourism Assistant that builds hyper-personalised Emirates itineraries with generative AI. Grade 9 AI project by Ashwanth Vijay." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<!-- Stylesheets — THE ORDER MATTERS. Each file may override the
+     one above it, so the page-specific file must come last. -->
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+<!-- ── floating header ─────────────────────────────────────── -->
+<header class="hdr" id="hdr">
+  <a class="hdr-brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>AI_tour_guide.ae</a>
+  <nav class="hdr-nav">
+    <a href="#about-ai">About</a>
+    <a href="#features">Features</a>
+    <a href="#impact">Impact</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="hdr-cta">
+    <a class="link" href="studio.html" target="_blank" rel="noopener">Try demo</a>
+    <a class="btn pill" href="studio.html" target="_blank" rel="noopener">Get Started <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+
+<!-- ── hero ────────────────────────────────────────────────── -->
+<section class="sky" id="home">
+  <div class="ridge" aria-hidden="true"><span class="r1"></span><span class="r2"></span><span class="r3"></span></div>
+  <div class="fog f1" aria-hidden="true"><i></i></div>
+  <div class="fog f2" aria-hidden="true"><i></i></div>
+  <div class="fog f3" aria-hidden="true"><i></i></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <h1 class="display">
+        Your Emirates trip,
+        <span class="l2">finally under control</span>
+      </h1>
+      <p class="sub">AI_tour_guide.ae turns four answers into a full day-by-day UAE itinerary — priced in dirhams, mapped across the seven emirates, and exported as a PDF in under ten seconds.</p>
+      <div class="row">
+        <a class="btn pill" href="studio.html" target="_blank" rel="noopener">Open the studio <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-secondary" href="#about-ai">How the AI works</a>
+      </div>
+
+      <!-- link to the source code. The logo is an inline SVG rather than
+           an <img>, so it needs no network request and inherits the text
+           colour on hover via fill="currentColor". -->
+      <p class="gh">
+        <a class="gh-link" href="https://github.com/ashwanthvijay1234-debug/AI_tour_guide.ae" target="_blank" rel="noopener">
+          <svg class="gh-mark" viewBox="0 0 16 16" width="17" height="17" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+          </svg>
+          Visit us on GitHub
+        </a>
+      </p>
+
+      <!-- dashboard preview -->
+      <div class="mock" aria-label="Preview of the AI_tour_guide.ae generation studio">
+        <div class="mock-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="name">Generation studio</span>
+          <span class="tabs" aria-hidden="true"><i class="on">Itinerary</i><i>PDF</i><i>Map</i></span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-col">
+            <p class="mock-k">AI chat</p>
+            <div class="bubble me">5 days in Dubai and Abu Dhabi, culture and desert, AED 6,000.</div>
+            <div class="bubble">Planned. Day 2 is heritage in Old Dubai, Day 3 crosses to Abu Dhabi for the Grand Mosque at golden hour.</div>
+            <div class="bubble me">Make day 4 lighter — we have a toddler.</div>
+            <div class="bubble">Rebalanced: two stops, both shaded, back at the hotel by 16:00.</div>
+          </div>
+          <div class="mock-col">
+            <p class="mock-k">Day 2 · Heritage and the creek</p>
+            <div class="mock-day"><span class="t">08:30</span><span class="n">Al Fahidi Historical Neighbourhood<small>Wind-tower lanes before the heat · Free</small></span></div>
+            <div class="mock-day"><span class="t">11:00</span><span class="n">Abra across Dubai Creek<small>The one-dirham crossing · AED 1</small></span></div>
+            <div class="mock-day"><span class="t">13:30</span><span class="n">Gold &amp; Spice Souks, Deira<small>Bargain properly · Free</small></span></div>
+            <div class="mock-day"><span class="t">15:30</span><span class="n">Museum of the Future<small>Booked slot, indoors at peak heat · AED 149</small></span></div>
+            <div class="mock-day"><span class="t">18:00</span><span class="n">Emirati dinner at Al Fanar<small>Balaleet, chebab and karak · AED 95</small></span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="proof">
+        <span>7 Emirates covered</span><span>&lt;10s generation</span><span>40+ landmarks</span><span>Serves UAE Vision 2071</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap">
+    <p>AI_tour_guide gives you real-time itineraries, intelligent insights, <span class="dim">and beautiful plans — so you can spend the trip travelling, not researching.</span></p>
+  </div>
+</section>
+
+<div class="page">
+<div class="wrap">
+
+  <section class="sec rv" id="try" style="text-align:center">
+    <h2 class="sec-title" style="max-width:none;margin:0 auto">Open the studio and plan a trip.</h2>
+    <p class="sec-sub" style="margin:var(--half) auto 0">Set the trip up, refine it by chat, watch the PDF build itself. It opens in its own tab.</p>
+    <p style="margin-top:calc(1.2 * var(--leading))">
+      <a class="btn pill" href="studio.html" target="_blank" rel="noopener">Open the generation studio <span aria-hidden="true">↗</span></a>
+    </p>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── FEATURES ─────────────────────────────────────────── -->
+  <section class="sec rv" id="features">
+    <span class="kicker">01 — Features</span>
+    <h2 class="sec-title">Four things the guidebook cannot do.</h2>
+    <div class="cards">
+      <div class="ncard"><span class="k">Generative</span><h4>Written fresh, every time</h4><p>No stored tours. A language model writes each plan from your inputs, so two travellers never get the same trip.</p></div>
+      <div class="ncard"><span class="k">Conversational</span><h4>Refine by talking</h4><p>“Cheaper”, “more food”, “we have a toddler” — the chat re-plans the whole itinerary around the correction.</p></div>
+      <div class="ncard"><span class="k">Document</span><h4>Live PDF, always current</h4><p>jsPDF rebuilds a clean, printable document on every generation and shows it inline before you download.</p></div>
+      <div class="ncard"><span class="k">Spatial</span><h4>Every stop on the map</h4><p>Each stop plots on an embedded map of the UAE so you can see the shape of the day before you book anything.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── ABOUT AI ─────────────────────────────────────────── -->
+  <section class="sec rv" id="about-ai">
+    <span class="kicker">02 — About the AI</span>
+    <h2 class="sec-title">Generative AI and NLP, doing the planning work.</h2>
+    <p class="sec-sub">AI_tour_guide.ae is not a database of fixed tours. It is a language model given a carefully engineered brief, and the pipeline runs in four steps.</p>
+    <div style="margin-top:calc(1.4 * var(--leading))">
+      <div class="feature"><p class="f-num">01</p><h3 class="f-title">Understanding preferences</h3><p class="f-copy">Destination, duration, budget and interest tags become a natural-language brief — the same sentences a human travel agent would be told. Natural Language Processing lets the model read that brief the way a person does, including what is implied rather than stated: “family” means shorter days and fewer late nights.</p></div>
+      <div class="feature"><p class="f-num">02</p><h3 class="f-title">Prompt engineering</h3><p class="f-copy">The app wraps your choices in a system instruction fixing the model's role, the currency (AED), the pacing rules and the exact JSON shape of the answer. Constraining the output format is what turns a chatty model into a reliable component of an application.</p></div>
+      <div class="feature"><p class="f-num">03</p><h3 class="f-title">Generative reasoning</h3><p class="f-copy">Gemini predicts the plan token by token, balancing geography (grouping nearby stops), timing (heat, prayer times, opening hours) and money (spreading the budget across days). Nothing is retrieved from a list — every itinerary is generated.</p></div>
+      <div class="feature"><p class="f-num">04</p><h3 class="f-title">Structured rendering</h3><p class="f-copy">The reply is parsed back into data — days, stops, times, costs, tips — then drawn into the studio, typeset into the PDF and plotted on the map. If the model answers in prose instead of JSON, the app renders the text safely rather than failing.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── PROBLEM ──────────────────────────────────────────── -->
+  <section class="sec rv" id="problem">
+    <span class="kicker">03 — Problem statement</span>
+    <h2 class="sec-title">A printed guidebook cannot know who is reading it.</h2>
+    <p class="sec-sub">Traditional travel guides and static websites are written once, for an average traveller who does not exist. Every real trip breaks their assumptions.</p>
+    <div class="cards">
+      <div class="ncard"><span class="k">Not personal</span><h4>One plan for everyone</h4><p>A guidebook's “three days in Dubai” is identical for a photographer, a shopper and a family with a toddler. It cannot weight the day toward what a specific traveller cares about.</p></div>
+      <div class="ncard"><span class="k">Not flexible</span><h4>Fixed time, fixed money</h4><p>Most guides assume a standard week and an unstated budget. Travellers with two days, or AED 1,500 instead of 15,000, must redo the whole plan themselves.</p></div>
+      <div class="ncard"><span class="k">Not current</span><h4>Out of date on arrival</h4><p>Opening hours, ticket prices, new attractions and seasonal closures change faster than editions are printed, so parts of every guide are wrong before it is bought.</p></div>
+      <div class="ncard"><span class="k">Not efficient</span><h4>Hours of manual research</h4><p>Planning a UAE trip today means twenty browser tabs, three review sites and a spreadsheet — and the result is still a guess about how far apart things are.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── SOLUTION ─────────────────────────────────────────── -->
+  <section class="sec rv" id="solution">
+    <span class="kicker">04 — The AI solution</span>
+    <h2 class="sec-title">Instant, dynamic, hyper-personalised planning.</h2>
+    <p class="sec-sub">AI_tour_guide.ae replaces the static guide with a generative model that writes a new plan for every traveller, every time.</p>
+    <div class="cards">
+      <div class="ncard"><span class="k">Personalised</span><h4>Built around your inputs</h4><p>Interests, budget and pace steer the generation, so a desert-and-culture trip and a shopping-and-food trip through the same city look nothing alike.</p></div>
+      <div class="ncard"><span class="k">Adaptive</span><h4>Any length, any budget</h4><p>One day or fourteen, AED 500 or 30,000 — the model rebalances the whole itinerary rather than trimming a fixed template.</p></div>
+      <div class="ncard"><span class="k">Practical</span><h4>Times, costs, travel logic</h4><p>Each stop carries a time window, a dirham estimate and a reason, and nearby places are grouped so the day is not spent in taxis.</p></div>
+      <div class="ncard"><span class="k">Portable</span><h4>Download and go</h4><p>Every plan exports to a clean PDF that works offline, on paper, and on a phone with no signal in the desert.</p></div>
+    </div>
+  </section>
+
+  <section class="split rv">
+    <div>
+      <span class="kicker">Designed for the Emirates</span>
+      <h2 class="split-title">Golden hour, planned by machine.</h2>
+      <p class="note">The model is briefed on UAE realities that generic travel AI misses: midday heat in summer, Friday prayer timings, modest dress at mosques, Ramadan hours, and the real drive times between Dubai, Abu Dhabi and the northern emirates.</p>
+    </div>
+    <figure class="split-figure lighten">
+      <img src="assets/photo.jpg" alt="Photograph blending into the dark page ground" onerror="this.closest('figure').remove()" />
+    </figure>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── IMPACT ───────────────────────────────────────────── -->
+  <section class="sec rv" id="impact">
+    <span class="kicker">05 — UAE impact</span>
+    <h2 class="sec-title">Smart tourism is part of UAE Vision 2071.</h2>
+    <p class="sec-sub">The UAE Centennial 2071 plan sets out to make the Emirates the world's most future-ready nation, with a knowledge economy built on artificial intelligence. Tourism is where visitors feel that ambition first.</p>
+    <div class="cards">
+      <div class="ncard"><span class="k">Economy</span><h4>Beyond oil</h4><p>Tourism is a pillar of the diversified economy. AI planning raises the quality of a visit, encourages longer stays, and supports the hotels, guides and small businesses that depend on them.</p></div>
+      <div class="ncard"><span class="k">Sustainability</span><h4>Fewer wasted kilometres</h4><p>Grouping stops geographically cuts unnecessary driving, which cuts fuel and emissions. Smarter routing is quietly one of the greenest things a travel app can do.</p></div>
+      <div class="ncard"><span class="k">Culture</span><h4>Heritage in every plan</h4><p>The model is instructed to include Emirati heritage — Al Fahidi, Qasr Al Hosn, Sharjah's museums, falconry and the majlis — not just malls and towers.</p></div>
+      <div class="ncard"><span class="k">Access</span><h4>Every visitor, every language</h4><p>Language models work across languages, so the same assistant can brief an Arabic, Hindi, Mandarin or Russian speaker with no separate edition of anything.</p></div>
+    </div>
+  </section>
+
+  <section class="quote rv">
+    <figure>
+      <blockquote>“Artificial intelligence is the new oil — and in tourism, its value shows up as time given back to the traveller.”</blockquote>
+      <figcaption>— Project thesis, AI_tour_guide.ae</figcaption>
+    </figure>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── FAQ ──────────────────────────────────────────────── -->
+  <section class="sec rv" id="faq">
+    <span class="kicker">06 — FAQ</span>
+    <h2 class="sec-title">Questions a marker usually asks.</h2>
+    <div class="faq">
+      <details open><summary>Which AI model does this use?</summary><p>Google's Gemini family, called directly from the browser over the REST API. The model is selectable in the studio — gemini-2.5-flash by default, with gemini-3-flash and gemini-2.5-pro available. Without an API key the app falls back to a built-in offline planner so the demo never fails.</p></details>
+      <details><summary>Where is my API key stored?</summary><p>Only in your own browser's local storage. It is never sent anywhere except directly to Google's API endpoint from your machine, and there is no server behind this project at all.</p></details>
+      <details><summary>How is the PDF produced?</summary><p>jsPDF builds the document in the browser from the generated data — headings, day blocks, stops, costs and tips are typeset as real text, not a screenshot, so the file stays small, selectable and printable.</p></details>
+      <details><summary>Is the itinerary data real?</summary><p>The places, prices and timings are real UAE landmarks and realistic 2026 estimates, but they are AI-generated suggestions and should be checked against official sites before booking.</p></details>
+      <details><summary>What was built by hand here?</summary><p>All of it: the interface, the prompt engineering, the JSON parsing, the PDF typesetting, the map integration and the offline fallback planner. No frameworks, no page builders — one HTML file.</p></details>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ── CONCLUSION ───────────────────────────────────────── -->
+  <section class="sec rv" id="conclusion">
+    <span class="kicker">07 — Conclusion</span>
+    <h2 class="sec-title">What comes after the itinerary.</h2>
+    <p class="sec-sub">This is one step. The same technology points toward a UAE visit guided end to end by AI — and most of the pieces already exist.</p>
+    <div class="cards">
+      <div class="ncard"><span class="k">Next</span><h4>Real-time AR navigation</h4><p>Point a phone at Al Fahidi or the Louvre Abu Dhabi and see the itinerary, the history and the directions drawn over the street itself.</p></div>
+      <div class="ncard"><span class="k">Next</span><h4>Automated booking</h4><p>The assistant reserves the desert safari, the museum slot and the table, and rebuilds the day automatically when something is unavailable.</p></div>
+      <div class="ncard"><span class="k">Next</span><h4>Voice companion</h4><p>A bilingual Arabic–English voice assistant that answers questions while walking and re-plans out loud when the plan changes.</p></div>
+      <div class="ncard"><span class="k">Next</span><h4>Live conditions</h4><p>Weather, crowd levels, prayer times and traffic folded in as they happen, so a 45°C afternoon quietly becomes an indoor one.</p></div>
+    </div>
+    <p class="sec-sub" style="margin-top:calc(1.4 * var(--leading))">The lesson of this project: generative AI is most useful when it is given structure — a clear role, real constraints and a defined output. Given those, a language model stops being a chatbot and becomes a tool that does a real job.</p>
+  </section>
+
+  <footer>
+    <span>AI_tour_guide.ae — Smart UAE AI Tourism Assistant. Grade 9-AI project by Ashwanth Vijay.</span>
+    <span>Gemini API · jsPDF · Google Maps · no frameworks.</span>
+  </footer>
+</div>
+</div>
+
+<!-- Behaviour for this page: sticky header, scroll spy, reveals. -->
+<script src="js/index.js" defer></script>
+</body>
+</html>

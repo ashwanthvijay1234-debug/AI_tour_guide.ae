@@ -1,0 +1,9 @@
+# Local editor / tooling settings — not part of the project
+.claude/
+.vscode/
+.idea/
+
+# Windows / macOS junk files
+Thumbs.db
+desktop.ini
+.DS_Store

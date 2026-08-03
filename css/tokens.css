@@ -1,0 +1,69 @@
+/* ═══════════════════════════════════════════════════════════════
+   tokens.css  —  SHARED by index.html and studio.html
+
+   WHAT THIS FILE IS
+   The design "vocabulary" of the whole site: colours, fonts, corner
+   radii and spacing rhythm. Nothing here draws anything by itself —
+   it only gives names to values, e.g. --color-accent = #9184d9.
+   Every other CSS file then says `color: var(--color-accent)`
+   instead of repeating the hex code.
+
+   WHY IT IS SEPARATE
+   Change a colour here once and BOTH pages update together.
+
+   LOAD ORDER — this file must come FIRST, before every other
+   stylesheet, because the others rely on these names existing.
+
+   Only tokens whose values are IDENTICAL on both pages live here.
+   Page-specific tokens (the hero sky, the studio rail width) are
+   declared at the top of index.css / studio.css instead.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── core surface + ink ──────────────────────────────────────
+     The four colours the dark theme is built from.             */
+  --color-bg: #161826;        /* page background — deep navy    */
+  --color-surface: #232532;   /* cards and panels sit on this   */
+  --color-text: #e9e9ed;      /* default text — soft white      */
+  --color-accent: #9184d9;    /* the purple used for all links,
+                                 buttons and highlights         */
+  --color-divider: color-mix(in srgb, #e9e9ed 16%, transparent);
+
+  /* ── neutral ramp ────────────────────────────────────────────
+     Greys from lightest (100) to darkest (900). Used for muted
+     text, borders and tag backgrounds.                         */
+  --color-neutral-100: #f3f5fe;
+  --color-neutral-700: #595d6c;
+  --color-neutral-800: #3f424d;
+
+  /* ── accent ramp ─────────────────────────────────────────────
+     Tints and shades of the purple above. Low numbers are pale
+     (good for text on dark), high numbers are deep (good for
+     backgrounds).                                              */
+  --color-accent-100: #f5f4ff;
+  --color-accent-200: #e7e5fe;
+  --color-accent-300: #d2cefd;
+  --color-accent-400: #b5abfc;
+  --color-accent-600: #796cbf;
+  --color-accent-700: #5d5294;
+  --color-accent-800: #423a6a;
+  --color-accent-900: #2b2741;
+
+  /* ── type ────────────────────────────────────────────────────
+     Inter is pulled from Google Fonts in the HTML <head>.
+     system-ui is the fallback if that request fails.           */
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* ── corner radii ────────────────────────────────────────────
+     --radius-xl is NOT here: the landing page uses 22px and the
+     studio uses 20px, so each page sets its own.               */
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  /* ── vertical rhythm ─────────────────────────────────────────
+     One "line" of the layout grid, and half of it. Sizes are
+     stacked in multiples of these so text lines up.            */
+  --leading: 28px;
+  --half: 14px;
+}

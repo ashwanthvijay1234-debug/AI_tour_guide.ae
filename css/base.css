@@ -1,0 +1,90 @@
+/* ═══════════════════════════════════════════════════════════════
+   base.css  —  SHARED by index.html and studio.html
+
+   WHAT THIS FILE IS
+   The browser reset plus the parts of the button / input / chip
+   styling that are EXACTLY the same on both pages.
+
+   IMPORTANT — WHY SOME CONTROL STYLES ARE *NOT* HERE
+   The studio deliberately runs a slightly denser interface than
+   the landing page (13.5px inputs instead of 14px, 14px slider
+   handles instead of 15px, tighter chip gaps). Those rules would
+   fight each other if they were shared, so only the identical
+   rules live in this file. Each page defines its own sizing for
+   .btn, .input, .chip, .chips, .pill, .hint, .spinner, .tag and
+   the range slider handles — look for the "control sizing" block
+   near the top of index.css / studio.css.
+
+   LOAD ORDER — second, after tokens.css and before the page file.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── reset ────────────────────────────────────────────────────
+   border-box makes padding count INSIDE an element's width,
+   which is what you almost always want when sizing boxes.     */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+/* ── links ──────────────────────────────────────────────────── */
+a:hover { color: var(--color-accent-300); }
+
+/* ── keyboard focus ───────────────────────────────────────────
+   :focus is cleared and :focus-visible re-added so the purple
+   ring shows for keyboard users but not on mouse clicks.
+   Do not delete this — it is what keeps the site accessible.  */
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+
+/* ── button variants ──────────────────────────────────────────
+   The SHAPE of .btn (padding, font size) is set per page.
+   These rules only decide the COLOUR of each variant.         */
+.btn-primary { color: var(--color-accent); border-color: var(--color-accent); }
+.btn-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.btn-primary:active:not(:disabled) { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
+.btn-secondary { border-color: var(--color-divider); }
+.btn-secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.btn-sm { font-size: 12.5px; padding: 6px 11px; }
+.btn-block { width: 100%; }
+
+/* ── form fields ──────────────────────────────────────────────
+   select.input hides the native dropdown arrow and paints a
+   purple chevron out of two diagonal gradients instead.       */
+.input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+select.input { appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-accent) 50%),
+                    linear-gradient(135deg, var(--color-accent) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 17px, calc(100% - 12px) 17px;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+
+/* ── tag colours ──────────────────────────────────────────────
+   Small rounded labels, e.g. "Demo mode" in the studio header. */
+.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); }
+.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); }
+
+/* ── range slider track ───────────────────────────────────────
+   The bar itself. The draggable handle is sized per page.
+   --fill is written by JavaScript as you drag, so the part of
+   the track behind the handle turns purple.                   */
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px;
+  background: transparent; cursor: pointer; display: block; }
+input[type=range]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px;
+  background: linear-gradient(to right, var(--color-accent) var(--fill,50%),
+    color-mix(in srgb, var(--color-text) 16%, transparent) var(--fill,50%)); }
+input[type=range]::-moz-range-track { height: 3px; border-radius: 2px;
+  background: color-mix(in srgb, var(--color-text) 16%, transparent); }
+input[type=range]::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--color-accent); }
+
+/* ── interest chips ───────────────────────────────────────────
+   Each chip wraps a hidden real checkbox, so it stays keyboard
+   accessible. :has(input:checked) styles the chip when the
+   checkbox inside it is ticked.                               */
+.chip:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.chip input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.chip:has(input:checked) { color: var(--color-accent-200); border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent); }
+.chip:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* ── loading spinner animation ────────────────────────────────
+   The .spinner circle itself is sized per page; this is just
+   the rotation it uses.                                       */
+@keyframes spin { to { transform: rotate(360deg); } }
