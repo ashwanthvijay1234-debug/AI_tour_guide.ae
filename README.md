@@ -1,8 +1,7 @@
 # AI_tour_guide.ae
 
 ### Smart UAE AI Tourism Assistant
-![Uploading image.png…]()
-
+<img width="1919" height="932" alt="image" src="https://github.com/user-attachments/assets/2a0080c5-7b23-440a-b13b-81d24f1bb5bd" />
 
 An AI-powered virtual guide that plans your trip around the UAE. Tell it where you
 want to go, how long you have and what you like — it builds a full day-by-day
