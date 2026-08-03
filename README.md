@@ -82,6 +82,7 @@ It's **free**, and it takes about two minutes to get.
 > only if you want the AI to write the itinerary from scratch.
 
 ### Step 1 — Open Google AI Studio
+Watch this video(https://youtu.be/JdKcFCLotZY?si=YtJM6uWIsKA7dDxw) or follow the steps below :
 
 Go to **[aistudio.google.com/apikey](https://aistudio.google.com/apikey)**
 
