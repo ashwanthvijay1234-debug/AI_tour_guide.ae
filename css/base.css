@@ -1,90 +1,298 @@
-/* ═══════════════════════════════════════════════════════════════
-   base.css  —  SHARED by index.html and studio.html
+/* ============================================================================
+   base.css — reset and shared controls for AI_tour_guide.ae
+   ----------------------------------------------------------------------------
+   WHAT THIS IS
+   The second stylesheet on both pages. It holds the reset, the typographic
+   defaults, focus handling, and the COLOUR variants of buttons and chips.
 
-   WHAT THIS FILE IS
-   The browser reset plus the parts of the button / input / chip
-   styling that are EXACTLY the same on both pages.
+   WHAT IS DELIBERATELY NOT HERE
+   Control SIZING. The studio runs a denser interface than the landing page
+   (13.5px inputs and 14px slider handles against 14px and 15px, tighter chip
+   gaps) because it shows three columns of controls at once while the landing
+   page shows a handful of generous marketing buttons. Trying to share one
+   padding scale between those two jobs produced a studio that wasted a third
+   of its rail on air, so sizing moved into the page stylesheets and only the
+   paint stayed here.
 
-   IMPORTANT — WHY SOME CONTROL STYLES ARE *NOT* HERE
-   The studio deliberately runs a slightly denser interface than
-   the landing page (13.5px inputs instead of 14px, 14px slider
-   handles instead of 15px, tighter chip gaps). Those rules would
-   fight each other if they were shared, so only the identical
-   rules live in this file. Each page defines its own sizing for
-   .btn, .input, .chip, .chips, .pill, .hint, .spinner, .tag and
-   the range slider handles — look for the "control sizing" block
-   near the top of index.css / studio.css.
+   WHERE THE REST LIVES
+   css/tokens.css  the variables everything below refers to (loads first)
+   css/index.css / css/studio.css  page-specific layout and sizing (load last)
+   ========================================================================== */
 
-   LOAD ORDER — second, after tokens.css and before the page file.
-   ═══════════════════════════════════════════════════════════════ */
+/* --- Reset ---------------------------------------------------------------- */
 
-/* ── reset ────────────────────────────────────────────────────
-   border-box makes padding count INSIDE an element's width,
-   which is what you almost always want when sizing boxes.     */
-*, *::before, *::after { box-sizing: border-box; }
-[hidden] { display: none !important; }
+*,
+*::before,
+*::after { box-sizing: border-box; }
 
-/* ── links ──────────────────────────────────────────────────── */
-a:hover { color: var(--color-accent-300); }
+html { -webkit-text-size-adjust: 100%; }
 
-/* ── keyboard focus ───────────────────────────────────────────
-   :focus is cleared and :focus-visible re-added so the purple
-   ring shows for keyboard users but not on mouse clicks.
-   Do not delete this — it is what keeps the site accessible.  */
+body,
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd, ul, ol {
+  margin: 0;
+}
+
+ul[class], ol[class] {
+  padding: 0;
+  list-style: none;
+}
+
+img, svg, iframe { display: block; max-width: 100%; }
+img { height: auto; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* --- Document ------------------------------------------------------------- */
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: var(--leading);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.16;
+}
+
+p { text-wrap: pretty; }
+
+/* --- Links ---------------------------------------------------------------- */
+
+a {
+  color: var(--accent-300);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+a:hover { color: var(--accent-100); }
+
+/* --- Focus ---------------------------------------------------------------
+   Clear the UA ring entirely, then put a purple one back for :focus-visible
+   only. Keyboard users get an obvious target; mouse users do not get a ring
+   stuck on every button they click.                                        */
+
 :focus { outline: none; }
-:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
 
-/* ── button variants ──────────────────────────────────────────
-   The SHAPE of .btn (padding, font size) is set per page.
-   These rules only decide the COLOUR of each variant.         */
-.btn-primary { color: var(--color-accent); border-color: var(--color-accent); }
-.btn-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
-.btn-primary:active:not(:disabled) { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
-.btn-secondary { border-color: var(--color-divider); }
-.btn-secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
-.btn-sm { font-size: 12.5px; padding: 6px 11px; }
-.btn-block { width: 100%; }
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
 
-/* ── form fields ──────────────────────────────────────────────
-   select.input hides the native dropdown arrow and paints a
-   purple chevron out of two diagonal gradients instead.       */
-.input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
-select.input { appearance: none; cursor: pointer;
-  background-image: linear-gradient(45deg, transparent 50%, var(--color-accent) 50%),
-                    linear-gradient(135deg, var(--color-accent) 50%, transparent 50%);
-  background-position: calc(100% - 17px) 17px, calc(100% - 12px) 17px;
-  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+::selection {
+  background: var(--accent-800);
+  color: var(--color-text);
+}
 
-/* ── tag colours ──────────────────────────────────────────────
-   Small rounded labels, e.g. "Demo mode" in the studio header. */
-.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); }
-.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); }
+/* --- Button colour variants ---------------------------------------------
+   Colour only. Each page sets its own padding, font-size and radius on .btn
+   before these variants paint it.                                          */
 
-/* ── range slider track ───────────────────────────────────────
-   The bar itself. The draggable handle is sized per page.
-   --fill is written by JavaScript as you drag, so the part of
-   the track behind the handle turns purple.                   */
-input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px;
-  background: transparent; cursor: pointer; display: block; }
-input[type=range]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px;
-  background: linear-gradient(to right, var(--color-accent) var(--fill,50%),
-    color-mix(in srgb, var(--color-text) 16%, transparent) var(--fill,50%)); }
-input[type=range]::-moz-range-track { height: 3px; border-radius: 2px;
-  background: color-mix(in srgb, var(--color-text) 16%, transparent); }
-input[type=range]::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--color-accent); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background: none;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
 
-/* ── interest chips ───────────────────────────────────────────
-   Each chip wraps a hidden real checkbox, so it stays keyboard
-   accessible. :has(input:checked) styles the chip when the
-   checkbox inside it is ticked.                               */
-.chip:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
-.chip input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
-.chip:has(input:checked) { color: var(--color-accent-200); border-color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 16%, transparent); }
-.chip:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
-/* ── loading spinner animation ────────────────────────────────
-   The .spinner circle itself is sized per page; this is just
-   the rotation it uses.                                       */
-@keyframes spin { to { transform: rotate(360deg); } }
+.btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #14131f;
+  font-weight: 600;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-400);
+  border-color: var(--accent-400);
+}
+
+.btn-secondary {
+  background: var(--color-raised);
+  border-color: var(--color-line);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent-700);
+  color: var(--accent-100);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--color-text);
+  background: rgba(145, 132, 217, 0.1);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--color-line);
+  color: var(--color-text);
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--accent-100);
+}
+
+/* --- Chip colour variants (checkbox pills) ------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-line);
+  background: var(--color-raised);
+  color: var(--color-muted);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.chip:hover { border-color: var(--accent-700); color: var(--color-text); }
+
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+
+.chip:has(input:checked) {
+  background: var(--accent-900);
+  border-color: var(--accent-600);
+  color: var(--accent-100);
+}
+
+.chip:has(input:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* --- Shared helpers ------------------------------------------------------- */
+
+.kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sand-400);       /* gold: kickers name places and sections */
+}
+
+/* --- Arabic ---------------------------------------------------------------
+   Every Arabic string carries lang="ar" dir="rtl" in the markup so screen
+   readers switch voice and the bidirectional algorithm gets the direction
+   right — the font swap below is the least important part of doing this
+   properly. */
+[lang='ar'] {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;            /* Arabic must never be letter-spaced */
+  line-height: 1.9;             /* the script needs more room than Latin */
+}
+
+/* --- UAE flag rule --------------------------------------------------------
+   A 3px ribbon in the flag's four colours, marking the major section breaks.
+   Each repeat keeps the flag's own proportions — a red hoist band, then green,
+   white and black in equal thirds.
+
+   It REPEATS every 180px rather than stretching one flag across the window.
+   Stretched to full width the bands became so wide that the eye stopped
+   reading them as a flag at all and just saw a bright white line with some
+   colour at one end. Repeating restores the rhythm, and it looks the same on a
+   phone as on a desktop instead of rescaling with the viewport. */
+.flag-rule {
+  height: 3px;
+  border: 0;
+  margin: 0;
+  background-image: linear-gradient(
+    90deg,
+    var(--uae-red) 0 12%,
+    var(--uae-green) 12% 41.3%,
+    var(--uae-white) 41.3% 70.6%,
+    var(--uae-black) 70.6% 100%
+  );
+  background-size: 180px 100%;
+  background-repeat: repeat-x;
+  opacity: 0.82;
+}
+
+/* --- Mashrabiya lattice ---------------------------------------------------
+   A geometric screen built from four repeating gradients crossing at 45°
+   steps — the same construction logic as a carved wooden mashrabiya panel,
+   which is what shades every traditional courtyard in the Gulf. Pure CSS, so
+   it costs no request and scales to any size. Kept very low contrast: it is
+   texture, not pattern, and it must never fight the text over it. */
+.mashrabiya {
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 17px, rgba(201, 162, 39, 0.055) 17px 18px),
+    repeating-linear-gradient(-45deg, transparent 0 17px, rgba(201, 162, 39, 0.055) 17px 18px),
+    repeating-linear-gradient(0deg, transparent 0 24px, rgba(201, 162, 39, 0.03) 24px 25px),
+    repeating-linear-gradient(90deg, transparent 0 24px, rgba(201, 162, 39, 0.03) 24px 25px);
+}
+
+.muted { color: var(--color-muted); }
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Reduced motion ------------------------------------------------------
+   The site leans on drifting fog, reveals and a typing animation. Anyone who
+   has asked their OS to stop that gets a static page — not a broken one.   */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

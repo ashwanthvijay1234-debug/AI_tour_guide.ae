@@ -1,198 +1,298 @@
 # AI_tour_guide.ae
 
 ### Smart UAE AI Tourism Assistant
-<img width="1919" height="932" alt="image" src="https://github.com/user-attachments/assets/2a0080c5-7b23-440a-b13b-81d24f1bb5bd" />
 
-An AI-powered virtual guide that plans your trip around the UAE. Tell it where you
-want to go, how long you have and what you like — it builds a full day-by-day
-itinerary, prices everything in dirhams, plots every stop on a map, and lets you
-download the whole thing as a PDF.
+<img width="1919" height="932" alt="The AI_tour_guide.ae landing page" src="https://github.com/user-attachments/assets/2a0080c5-7b23-440a-b13b-81d24f1bb5bd" />
 
-**Grade 9 · Artificial Intelligence · Subject Enrichment Activity**
-Made by **Ashwanth Vijay**
+A Grade 9 Artificial Intelligence school project by **Ashwanth Vijay**, built around
+**UAE Vision 2071**.
 
----
-
-## What it does
-
-You answer four simple questions:
-
-| Question | Example |
-|---|---|
-| Where do you want to go? | Dubai, Abu Dhabi, Sharjah… or all of the UAE |
-| How many days? | 1 to 14 |
-| What's your budget per person? | AED 500 to AED 40,000 |
-| What are you interested in? | Food, beaches, culture, desert, shopping, family |
-
-…and it gives you back a complete trip plan in about ten seconds.
-
-**You can also just talk to it.** Once the plan appears, type things like
-*"make day 3 cheaper"*, *"we have a toddler"* or *"more desert, less shopping"*
-and it rewrites the itinerary around you.
-
-### The three things that make it useful
-
-🗓️ **A real itinerary, not a list** — every stop has a time window, a reason why
-it's worth going, and what it costs. Days are grouped by area so you're not
-driving back and forth across the emirates.
-
-🗺️ **Mapped and exportable** — see every stop on a map, then download the plan as
-a PDF to take with you.
-
-🌙 **It knows the UAE** — summer midday heat, Friday prayer timings, modest dress
-at mosques, Ramadan hours, and how long it really takes to drive between emirates.
-
----
-
-## Try it
-
-### The easy way
-
-1. Click the green **Code** button at the top of this page → **Download ZIP**
-2. Unzip the folder anywhere on your computer
-3. Double-click **`index.html`**
-
-That's it. No installing anything, no setup, no internet connection needed.
-
-### The two modes
-
-The studio works in **two different ways**, and this is the important bit:
-
-| | 🎭 **Demo mode** | ✨ **AI mode** |
-|---|---|---|
-| **Needs an API key?** | No | Yes (free) |
-| **Needs internet?** | No | Yes |
-| **How it plans** | A built-in list of real UAE places | Google Gemini writes it fresh |
-| **Always works?** | Yes, always | Only when Google is reachable |
-
-**Demo mode runs automatically** if you don't add a key — so the project never
-breaks, even with no internet. That was a deliberate design choice: a demo that
-depends on a working WiFi connection is a demo that fails when you need it most.
-
-Want the real AI to write your trip? Here's how 👇
-
----
-
-## 🔑 How to get your free Gemini API key
-
-An "API key" is just a long password that lets this webpage talk to Google's AI.
-It's **free**, and it takes about two minutes to get.
-
-> **You don't need this to use the project.** Demo mode works without it. This is
-> only if you want the AI to write the itinerary from scratch.
-
-### Step 1 — Open Google AI Studio
-Watch this video(https://youtu.be/JdKcFCLotZY?si=YtJM6uWIsKA7dDxw) or follow the steps below :
-
-Go to **[aistudio.google.com/apikey](https://aistudio.google.com/apikey)**
-
-### Step 2 — Sign in
-
-Use any normal Google account (the same one you use for Gmail or YouTube is fine).
-
-### Step 3 — Create the key
-
-Click the **"Create API key"** button.
-
-If it asks you to pick a project, just choose whatever it suggests, or click
-**"Create project"** and accept the default name. It doesn't matter what it's called.
-
-### Step 4 — Copy it
-
-You'll see a long code that starts with **`AIza`** followed by lots of letters and
-numbers. Click the copy icon next to it.
-
-⚠️ **Treat this like a password.** Don't post it online, don't put it in your
-homework screenshots, and don't share it with friends.
-
-### Step 5 — Paste it into the studio
-
-1. Open **`studio.html`**
-2. In the left column, scroll down and click **"Model & API key"** to expand it
-3. Paste your key into the **Gemini API key** box
-4. The tag in the top-right corner changes from **"Demo mode"** to **"Gemini live"** ✅
-
-Now press **Generate itinerary** and the AI writes your trip.
-
-### Where does the key go?
-
-**Nowhere.** It's saved only in your own browser, on your own computer. It never
-gets uploaded, never gets sent to me, and it isn't stored anywhere in this repo.
-If you open the project on a different computer, you'd have to paste it again.
-
----
-
-## 🔧 If something goes wrong
-
-| What you see | What it means | What to do |
-|---|---|---|
-| Tag says **"Demo mode"** | No key entered | Follow the steps above — or just carry on, demo mode works fine |
-| **"Check the key is enabled for the Generative Language API"** | The key isn't valid, or it's from the wrong kind of project | Make a fresh key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
-| **"Every Gemini model failed"** | Google couldn't be reached | Check your internet. The offline plan is shown instead, so you're not stuck |
-| Page looks plain and unstyled | The CSS didn't load | Make sure you kept the whole folder together — `index.html` needs the `css` folder next to it |
-| Changes don't show up | Your browser cached the old version | Press **Ctrl + F5** to force a proper refresh |
-
-The studio automatically asks Google which AI models your key can use, so it keeps
-working even when Google renames or retires models.
-
----
-
-## 📁 What's in each file
-
-Everything is plain **HTML, CSS and JavaScript** — no frameworks, no build step,
-nothing to install.
+Answer four questions. Ten seconds later you have a full day-by-day United Arab
+Emirates itinerary — every stop with a time window, a reason and a price in dirhams —
+that you can argue with in plain English, see on a map, and download as a PDF.
 
 ```
-index.html          the landing page (start here)
-studio.html         the actual trip-planning app
-
-css/
-  tokens.css        all the colours, fonts and spacing
-  base.css          buttons, inputs and shared basics
-  index.css         styling for the landing page
-  studio.css        styling for the app
-
-js/
-  index.js          scrolling effects on the landing page
-  studio.js         the brain — planning, AI, map and PDF
-
-assets/
-  photo.jpg         the photograph on the landing page
+Where are you going?      Dubai · Abu Dhabi · Sharjah · Ras Al Khaimah · Fujairah · All UAE
+How many days?            1 – 14
+What is your budget?      AED 500 – 30,000 per person
+What do you like?         Culture · Desert · Shopping · Family · Food · Beaches · Architecture · Nature
 ```
 
-Every file starts with a comment explaining what it is and what it's for, so you
-can open any one of them and know where you are.
+---
 
-### Why it's split up like this
+## Three things that make it useful
 
-It started as two enormous files with all the styling and code crammed inside
-them. Splitting it means the colours live in one place (change `tokens.css` and
-both pages update together), and you can find things without scrolling through
-hundreds of lines.
+1. **It writes the plan, it does not look it up.** There is no database of pre-made
+   tours. Every itinerary is composed on request, so two travellers never get the same
+   document.
+2. **You can talk to it.** "Make day 3 cheaper." "We have a toddler." The plan is rebuilt
+   around your notes instead of making you fill the form in again.
+3. **It works with no internet and no API key.** A built-in offline planner always
+   produces a real itinerary. A demo that depends on working WiFi is a demo that fails
+   in front of the class.
 
 ---
 
-## 🇦🇪 How this connects to UAE Vision 2071
+## How to run it
 
-Tourism is one of the pillars of the UAE's move beyond an oil-based economy.
-A guide like this makes the country easier to explore for visitors who don't
-know it — surfacing heritage sites and local food alongside the famous towers
-and malls, and making a trip work on a small budget as well as a large one.
-It also shows AI being used for something practical and everyday, which is
-exactly the kind of adoption the National AI Strategy is aiming for.
+There is nothing to install. No Node, no npm, no build step, no server.
 
----
+1. Download the ZIP (green **Code** button → *Download ZIP*).
+2. Unzip it anywhere.
+3. Double-click **`index.html`**.
 
-## 🛠️ Built with
+That is the whole setup. It opens from a `file://` URL in any modern browser.
 
-- **HTML5** and **CSS3** — custom properties, flexbox and grid, no frameworks
-- **JavaScript** — no libraries for the app logic
-- **Google Gemini API** — for the AI-written itineraries
-- **jsPDF** — for the PDF export
+> Two files come from the internet when you have a connection: the **Inter** font and
+> **jsPDF** (for the PDF). Offline, the page falls back to a system font and only the PDF
+> tab stops working — planning, chat and the map carry on.
 
 ---
 
-## 📄 Licence
+## Demo mode vs AI mode
 
-Released under the MIT Licence — see [LICENSE](LICENSE).
-You're welcome to read the code, learn from it and build on it.
+The studio runs in one of two modes, and the tag in the top-right corner always says
+which.
+
+| | **Demo mode** | **AI mode** |
+|---|---|---|
+| **Tag reads** | `Demo mode` (grey) | `Gemini live` (purple) |
+| **Needs** | Nothing | A free Gemini API key |
+| **Who writes the plan** | The built-in offline planner | Google Gemini |
+| **Internet** | Not required | Required |
+| **Understands your chat** | Only keywords — "cheaper", "toddler", "food" | Yes, properly |
+| **Varies between runs** | Yes, via a seeded shuffle | Yes |
+| **PDF, map, notes** | All work | All work |
+| **Cost** | Free | Free tier, then Google's pricing |
+
+Both modes produce something that *looks* like an itinerary. That is exactly why the
+**Test key** button exists — see below.
+
+---
+
+## Getting a free Gemini API key
+
+You do not need a key to use the app. If you want a real model writing the plans:
+
+**[Watch the video walkthrough](https://youtu.be/JdKcFCLotZY?si=YtJM6uWIsKA7dDxw)**, or
+follow the five steps below.
+
+1. Go to **[Google AI Studio](https://aistudio.google.com/app/apikey)** and sign in with a
+   Google account.
+2. Click **Create API key**.
+3. Pick a project (or let it make one) and confirm.
+4. Copy the key — it is a long string starting with `AIza…`.
+5. In the studio, open **Model & API key**, paste it into the box, and press **Test key**.
+
+**Treat the key like a password.** Anyone who has it can spend against your Google
+account. Do not paste it into a chat, do not put it in a screenshot, and never commit it
+to a repository.
+
+---
+
+## The Test key button, and why it exists
+
+Demo mode and AI mode both produce a polished-looking itinerary. So "is the AI actually
+running?" is a question you genuinely **cannot** answer by looking at the output — which
+makes it exactly the sort of thing a school project should be able to prove.
+
+The button answers it directly. It:
+
+- clears the cached model list, so the answer is about now and not five minutes ago;
+- asks Google which models your key can actually call;
+- makes **one real request**, asking the model to reply with exactly `OK`;
+- reports which model answered, what it said, the round-trip in milliseconds, and how
+  many models your key can use;
+- says so explicitly if the model you picked is not one of them.
+
+With no key it tells you plainly: the studio is running the offline planner, which is why
+every plan looks broadly similar.
+
+Unlike the Generate button, **Test key does not fall back to the offline planner.** If it
+fails, it shows you the failure. That is the entire point of it.
+
+> Detail worth knowing: this one call turns **JSON mode off**. "OK" is not valid JSON, so a
+> perfectly healthy key asked for "OK" in JSON mode would look like a failure.
+
+---
+
+## Which one wrote this plan — the offline planner or Gemini?
+
+Three places answer this, and they never disagree:
+
+1. **The badge under the plan title.** Grey dot, *"Written by Offline planner"* — or a
+   purple dot and the model's actual name, *"Written by gemini-3.6-flash"*. It also
+   carries a plan number, so you can see at a glance that pressing Regenerate produced a
+   genuinely new plan.
+2. **The mode tag in the top-right corner** — `Demo mode` or `Gemini live`. It updates
+   live as you type a key.
+3. **The Test key button**, which makes one real request and reports back.
+
+The PDF carries the same `Written by:` line, so a document you forward to somebody else
+is not ambiguous either.
+
+## Am I getting the same plan every time?
+
+If there is no API key, you are using the offline planner, and it used to repeat itself
+far more than it should have. Two separate causes, both now fixed:
+
+- **The seed reset on every page load.** The planner varies its output using a counter
+  that feeds a seeded shuffle, but that counter started at zero again on each reload — so
+  the first plan after a reload was *byte-identical* to the first plan after the previous
+  one. The counter is now saved in `localStorage` and keeps climbing. (**Reset trip &
+  chat** deliberately clears it and starts over.)
+- **The pool was smaller than the trip.** A 5-day trip needs 25 distinct places, and two
+  ticked interests only offered about 27 — so effectively every one of them was used
+  every time and only the running order changed. The place pool is now **103 real UAE
+  locations**, and the planner draws from a wider candidate list, which cuts the repeat
+  rate substantially.
+
+Two honest caveats that are not bugs:
+
+- **Some repetition is correct.** Tick only *Desert adventure* and you will keep seeing
+  Liwa, Al Marmoom and Hatta, because that is genuinely what the country offers. Tick
+  more interests and the variety goes up sharply.
+- **Long trips exhaust the pool.** A 14-day trip at six stops a day needs 84 slots. Rather
+  than print empty days, the planner cycles back through the pool — so places recur, which
+  is what a real fortnight looks like anyway.
+
+For plans that are actually different every time — and that genuinely understand
+"make day 4 lighter, we have a toddler" rather than just pattern-matching the word
+"toddler" — add an API key. That is the honest difference between the two modes.
+
+## Where is my key stored?
+
+**Nowhere.** It is saved in your own browser's `localStorage`, on your own computer, and
+that is the only copy.
+
+- There is **no backend** in this project. Not a small one — none at all.
+- The key travels from your browser straight to `generativelanguage.googleapis.com` and
+  nowhere else.
+- It is not in this repository, and every `localStorage` read and write is wrapped in
+  `try/catch` so private-browsing mode and `file://` restrictions cannot break the page.
+
+Clearing the field deletes the stored key.
+
+---
+
+## Troubleshooting
+
+| Symptom | What it means | Fix |
+|---|---|---|
+| Tag says `Demo mode` with a key pasted | The field is empty or whitespace | Re-paste the key; the tag switches as you type |
+| Test key: *"API key not valid"* (400/403) | The key is wrong, revoked, or the Generative Language API is not enabled for it | Copy the key again, whole; check it in Google AI Studio |
+| Test key: *"quota"* or 429 | Rate limit on the free tier | Wait a minute and try again |
+| Test key: *"No HTTP status came back"* | No connection, or the request was blocked before it left the browser | Check the network; some school and office networks block the endpoint |
+| Chat says *"gemini-X is busy — falling back to gemini-Y"* | The first model was unavailable; the app walked its chain | Nothing — this is the fallback working |
+| Plan appears but says *"built by the offline planner"* | No key, or every model in the chain failed | Add a key, then press Test key to see the real reason |
+| Model replied in prose, not a plan | The model ignored the JSON instruction | Press Regenerate; it usually complies on the retry |
+| PDF tab: *"The PDF library did not load"* | The jsPDF CDN file was blocked or you are offline | Reconnect and reload; everything else still works |
+| Every plan looks the same | See **"Am I getting the same plan every time?"** below | Check the badge under the plan title |
+| Map tile says it cannot load | Google Maps embeds need a connection | Reconnect; the rest of the studio is offline-capable |
+
+---
+
+## The repo, file by file
+
+```
+index.html          Landing page — the explainer. No AI logic lives here.
+studio.html         The app: three columns and a floating notes window.
+
+css/tokens.css      Colours, fonts, radii, spacing.        Loads 1st, both pages.
+css/base.css        Reset, links, focus, button colours.   Loads 2nd, both pages.
+css/index.css       Landing-page layout and the CSS sky.   Loads 3rd.
+css/studio.css      App layout, the veil, the notes panel. Loads 3rd.
+
+js/index.js         Sticky header, scroll-spy, reveals. Three behaviours, no more.
+js/studio.js        Everything else: the planner, the prompt, the Gemini layer,
+                    rendering, the map, the PDF, the chat animation, the notes.
+
+assets/hero-skyline.jpg   Dubai skyline across the dunes — the hero background.
+assets/mosque.jpg         Sheikh Zayed Grand Mosque at blue hour.
+assets/photo.jpg          The Liwa dunes at golden hour.
+assets/creek.jpg          Dubai Creek and the abras at dusk.
+```
+
+> **About the images.** They are AI-generated views of the UAE, not licensed
+> photographs, so the project ships with no attribution or usage strings attached.
+> Drop real photographs in over the top using the same filenames whenever you like —
+> nothing else needs to change. Every `<img>` carries an `onerror` that removes its own
+> figure, and the hero's photo sits on top of the original pure-CSS ridge silhouettes,
+> so a missing file always degrades cleanly instead of leaving a broken frame.
+
+**Why it is split this way.** Stylesheet order is load-bearing: the page-specific file
+comes last so it can override the shared ones. `tokens.css` holds a value only if it is
+identical on **both** pages — which is why the extra-large radius is not in there, since
+the landing page wants 22px and the studio wants 20px. `base.css` holds only the rules
+that are byte-identical on both pages; control *sizing* is deliberately per-page, because
+the studio runs a denser interface (13.5px inputs, 14px slider handles) than the landing
+page (14px, 15px).
+
+Both JavaScript files are wrapped in an IIFE with `'use strict'` and loaded with
+`defer`, so nothing leaks into the global scope and nothing blocks the parser.
+
+---
+
+## A few decisions worth explaining
+
+- **The offline planner varies its output on purpose.** It is a pure function, so pressing
+  Generate twice used to return a byte-identical plan — which reads as "the AI is broken",
+  and in demo mode there is no AI to blame. A session run counter feeds a *seeded* shuffle
+  (Knuth hash + LCG), so runs differ but one seed always gives one ordering, which keeps
+  the planner reproducible and testable.
+- **The model chain is filtered against reality.** An earlier version had model IDs
+  hard-coded as though they were permanent. Google retired them, every call 404'd, and the
+  studio silently fell back to the offline planner forever — with a valid key in the box.
+  Now the preference list is always checked against what the key can actually call, and a
+  400/403 while *listing* is reported immediately as a key problem instead of blaming the
+  last model in a chain nobody chose.
+- **The first error is the one reported, not the last.** The first failure came from the
+  model you actually picked.
+- **Nothing is rendered with `innerHTML`.** The content comes from a language model, so
+  every node is built with `createElement` and `textContent`.
+- **The "generating" veil covers the itinerary *and* the PDF panel.** They are separate
+  scroll boxes and you can switch tabs mid-generation; veiling both means the PDF tab is
+  never caught showing the previous trip's document as though it were the new one.
+
+---
+
+## UAE Vision 2071 and the National AI Strategy
+
+Vision 2071 sets out to make the UAE one of the best countries in the world by the
+centenary of the union, with a diversified, knowledge-led economy. The National AI
+Strategy 2031 names tourism among the sectors AI should serve. This project points at
+four of those goals:
+
+- **Economy** — tourism is a pillar of growth beyond oil, and a country that is easier to
+  plan a trip to is a country that is easier to choose.
+- **Sustainability** — grouping each day's stops by area cuts back-and-forth driving, and
+  with it fuel, emissions and time lost in traffic.
+- **Culture** — the model is instructed to include Emirati heritage in every plan, not
+  only malls and towers.
+- **Access** — large language models already work across Arabic, Hindi, Mandarin and
+  Russian, so no separate edition has to be written, printed or shipped.
+
+---
+
+## Tech
+
+Plain HTML, CSS and JavaScript. No framework, no bundler, no build step, no server.
+
+- **Google Gemini API** — called directly from the browser
+- **jsPDF 2.5.1** — PDF typesetting, via CDN
+- **Google Maps embeds** — the map panel
+- **Inter** — Google Fonts
+
+---
+
+## A note on the data
+
+The places are real UAE landmarks and the prices are realistic dirham figures, but they
+are **indicative, not live**. Nothing is fetched from a booking API. Check current prices
+and opening hours before you commit to a day.
+
+---
+
+## Licence
+
+MIT — see [LICENSE](LICENSE) for the full text.

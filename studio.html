@@ -1,228 +1,280 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--
-  ═══════════════════════════════════════════════════════════════
-  studio.html  —  THE ACTUAL APP
+  ============================================================================
+  studio.html — the generation studio for AI_tour_guide.ae
+  ----------------------------------------------------------------------------
+  WHAT THIS IS
+  The app itself: a three-column shell — trip setup, AI chat, and the output
+  tabs (Itinerary / PDF / Map) — plus a floating notes window. This file is
+  structure only. Every behaviour is in js/studio.js.
 
-  Three columns, left to right:
-    1. Trip setup — destination, days, budget, interests, API key
-    2. Chat       — refine the plan in plain English
-    3. Output     — the itinerary, a PDF export and a map
+  TWO WAYS IT CAN RUN
+  With no API key it uses the built-in offline planner (Demo mode). With a
+  Gemini key in the Model & API key panel it asks Google Gemini directly from
+  the browser (Gemini live). The mode tag in the app bar says which, live.
 
-  It works with NO API key: demo mode uses a built-in UAE planner,
-  so it always runs offline. Paste a Google Gemini key into the
-  setup rail to switch to live AI generation.
+  EXTERNAL FILES
+  jsPDF 2.5.1 from a CDN for the PDF, and Inter from Google Fonts. If jsPDF
+  fails to load, only the PDF tab degrades — planning, chat and the map all
+  keep working.
 
-  WHERE THE REST OF THE CODE LIVES
-    css/tokens.css   colours, fonts, spacing         (SHARED)
-    css/base.css     reset + control styling         (SHARED)
-    css/studio.css   this page's own styling
-    js/studio.js     ALL the planning / AI / PDF / map logic
+  WHERE THE REST LIVES
+  index.html       the landing page
+  css/tokens.css   shared tokens               (1st)
+  css/base.css     reset + shared controls     (2nd)
+  css/studio.css   this page's layout          (3rd — last so it can override)
+  js/studio.js     planning, AI, chat, map, PDF, notes
 
-  This file holds ONLY the HTML structure — there is no <style>
-  block and no inline JavaScript any more.
-  ═══════════════════════════════════════════════════════════════
+  PRIVACY: the API key is stored only in this browser's localStorage and is
+  sent nowhere except directly to Google's endpoint from this machine.
+  ============================================================================
 -->
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Studio — AI_tour_guide.ae</title>
-<meta name="description" content="Generation studio for AI_tour_guide.ae — set up a UAE trip, refine it by chat, and export the itinerary as a PDF." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<!-- Stylesheets — THE ORDER MATTERS. Each file may override the
-     one above it, so the page-specific file must come last. -->
-<link rel="stylesheet" href="css/tokens.css" />
-<link rel="stylesheet" href="css/base.css" />
-<link rel="stylesheet" href="css/studio.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generation studio — AI_tour_guide.ae</title>
+  <meta name="description" content="Generate, refine, map and export a personalised United Arab Emirates itinerary.">
+  <meta name="author" content="Ashwanth Vijay">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Inter and Noto Kufi Arabic in one request — see index.html. -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/studio.css">
+
+  <!-- jsPDF is the only runtime library. It is loaded without `defer` on
+       purpose so window.jspdf exists by the time studio.js first builds a
+       document; studio.js still checks for it before every export, because a
+       CDN that is blocked or offline must cost the PDF tab and nothing else. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="js/studio.js"></script>
 </head>
-<body>
 
-<div class="app">
-  <header class="appbar">
-    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>AI_tour_guide.ae</a>
-    <span class="sep" aria-hidden="true"></span>
-    <span class="where">Generation studio</span>
-    <span class="grow">
-      <span class="tag tag-neutral" id="mode-tag">Demo mode</span>
-      <a class="btn btn-secondary btn-sm" href="index.html">← Back to site</a>
-    </span>
-  </header>
+<body class="studio">
 
-  <div class="cols">
+<!-- ============================== App bar ================================ -->
+<header class="appbar mashrabiya">
+  <a class="brand" href="index.html">
+    <span class="brand-mark" aria-hidden="true">AI</span>
+    <span class="brand-name">AI_tour_guide<span class="brand-tld">.ae</span></span>
+  </a>
 
-    <!-- ── 1 · SETUP ─────────────────────────────────────── -->
-    <section class="col" aria-label="Trip setup">
-      <div class="col-head"><h2>1 · Trip setup</h2></div>
-      <div class="col-scroll">
-        <form class="setup" id="setup-form" autocomplete="off">
-          <p class="lead">Define the trip once. Everything after this happens in chat.</p>
+  <span class="appbar-loc">Generation studio</span>
+  <span class="appbar-ar" lang="ar" dir="rtl">استوديو التوليد</span>
 
+  <!-- Flips between "Demo mode" and "Gemini live" as the key field is typed
+       into, so the honest answer to "is the AI actually running?" is always
+       visible without opening a panel. -->
+  <span class="mode-tag" id="modeTag" data-mode="demo">Demo mode</span>
+
+  <a class="btn btn-secondary appbar-back" href="index.html">&larr; Back to site</a>
+</header>
+
+<!-- The flag rule doubles as the app bar's bottom border. -->
+<hr class="flag-rule appbar-flag">
+
+<main class="studio-shell">
+
+  <!-- ====================== Column 1 — Trip setup ======================= -->
+  <section class="col col-setup" aria-labelledby="setupHeading">
+    <h2 class="col-title" id="setupHeading">Trip setup</h2>
+
+    <form id="setupForm" novalidate>
+
+      <div class="field">
+        <label for="destination">Destination</label>
+        <select id="destination" name="destination">
+          <option value="Dubai">Dubai</option>
+          <option value="Abu Dhabi">Abu Dhabi</option>
+          <option value="Sharjah">Sharjah</option>
+          <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+          <option value="Fujairah">Fujairah</option>
+          <option value="All UAE" selected>All UAE</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="days">Trip duration</label>
+          <output class="field-value" id="daysLabel" for="days">5 days</output>
+        </div>
+        <input type="range" id="days" name="days" min="1" max="14" step="1" value="5">
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="budget">Budget per person</label>
+          <output class="field-value" id="budgetLabel" for="budget">AED 6,000 · Comfort</output>
+        </div>
+        <input type="range" id="budget" name="budget" min="500" max="30000" step="500" value="6000">
+        <p class="field-note" id="budgetDesc">Good hotels, a mix of paid attractions and free ones.</p>
+      </div>
+
+      <fieldset class="field chips-field">
+        <legend>Traveller interests</legend>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="interest" value="culture" checked><span>Cultural landmarks</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="desert" checked><span>Desert adventure</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="shopping"><span>Shopping</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="family"><span>Family</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="food"><span>Food &amp; dining</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="beach"><span>Beaches &amp; water</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="architecture"><span>Architecture</span></label>
+          <label class="chip"><input type="checkbox" name="interest" value="nature"><span>Nature &amp; wildlife</span></label>
+        </div>
+      </fieldset>
+
+      <button class="btn btn-primary btn-block" type="submit" id="generateBtn">Generate itinerary</button>
+      <button class="btn btn-secondary btn-block" type="button" id="resetBtn">Reset trip &amp; chat</button>
+
+      <details class="panel" id="keyPanel">
+        <summary>Model &amp; API key</summary>
+
+        <div class="panel-body">
           <div class="field">
-            <label for="destination">Destination</label>
-            <select class="input" id="destination">
-              <option>Dubai</option><option>Abu Dhabi</option><option>Sharjah</option>
-              <option>Ras Al Khaimah</option><option>Fujairah</option><option selected>All UAE</option>
+            <label for="modelSelect">AI model</label>
+            <select id="modelSelect">
+              <optgroup label="Recommended">
+                <option value="gemini-3.6-flash" selected>gemini-3.6-flash</option>
+                <option value="gemini-3.5-flash">gemini-3.5-flash</option>
+                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
+              </optgroup>
+              <optgroup label="Lower cost">
+                <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+              </optgroup>
+              <optgroup label="Most capable">
+                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+              </optgroup>
             </select>
           </div>
 
           <div class="field">
-            <div class="slider-head"><label for="days" style="margin:0">Trip duration</label><span class="slider-val" id="days-val">5 days</span></div>
-            <input type="range" id="days" min="1" max="14" step="1" value="5" />
-          </div>
-
-          <div class="field">
-            <div class="slider-head"><label for="budget" style="margin:0">Budget per person</label><span class="slider-val" id="budget-val">AED 6,000</span></div>
-            <input type="range" id="budget" min="500" max="30000" step="500" value="6000" />
-            <p class="hint" id="budget-note">Comfort — good hotels, a mix of paid attractions and free landmarks.</p>
-          </div>
-
-          <div class="field">
-            <label>Traveller interests</label>
-            <div class="chips" id="interests">
-              <label class="chip"><input type="checkbox" value="Cultural Landmarks" checked />Cultural landmarks</label>
-              <label class="chip"><input type="checkbox" value="Desert Adventure" checked />Desert adventure</label>
-              <label class="chip"><input type="checkbox" value="Shopping" />Shopping</label>
-              <label class="chip"><input type="checkbox" value="Family" />Family</label>
-              <label class="chip"><input type="checkbox" value="Food &amp; Dining" />Food &amp; dining</label>
-              <label class="chip"><input type="checkbox" value="Beaches &amp; Water" />Beaches &amp; water</label>
-              <label class="chip"><input type="checkbox" value="Architecture" />Architecture</label>
-              <label class="chip"><input type="checkbox" value="Nature &amp; Wildlife" />Nature &amp; wildlife</label>
+            <label for="apiKey">Gemini API key</label>
+            <div class="key-row">
+              <input type="password" id="apiKey" autocomplete="off" spellcheck="false"
+                     placeholder="Paste your key — optional">
+              <button class="btn btn-outline btn-sm" type="button" id="toggleKeyBtn"
+                      aria-pressed="false">Show</button>
             </div>
-          </div>
-
-          <div class="setup-actions">
-            <button type="submit" class="btn pill btn-block" id="generate">Generate itinerary</button>
-            <button type="button" class="btn btn-secondary btn-block btn-sm" id="reset">Reset trip &amp; chat</button>
-          </div>
-
-          <details class="adv">
-            <summary>Model &amp; API key</summary>
-            <div class="inner">
-              <div class="field">
-                <label for="model">AI model</label>
-                <!-- Only currently-supported model IDs. The old list still
-                     had gemini-1.5-* and gemini-2.0-* in it, which Google has
-                     since retired — every call 404'd. studio.js also checks
-                     this list against the API at run time, so a name going
-                     stale here can no longer break generation. -->
-                <select class="input" id="model">
-                  <optgroup label="Recommended">
-                    <option value="gemini-3.6-flash" selected>gemini-3.6-flash</option>
-                    <option value="gemini-3.5-flash">gemini-3.5-flash</option>
-                    <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
-                  </optgroup>
-                  <optgroup label="Lower cost">
-                    <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
-                    <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                    <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
-                  </optgroup>
-                  <optgroup label="Most capable">
-                    <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-                  </optgroup>
-                </select>
-                <p class="hint">The studio first asks Google which models your key can actually use, then retries down this list if one is overloaded or rate-limited.</p>
-              </div>
-              <div class="field">
-                <label for="apikey">Gemini API key</label>
-                <div class="key-row">
-                  <input class="input" id="apikey" type="password" placeholder="AIza… (blank = demo)" />
-                  <button type="button" class="btn btn-secondary btn-sm" id="key-toggle">Show</button>
-                </div>
-                <p class="hint">Stored only in this browser. Without a key the offline planner runs, so the studio always works.</p>
-              </div>
-            </div>
-          </details>
-        </form>
-      </div>
-    </section>
-
-    <!-- ── 2 · CHAT ──────────────────────────────────────── -->
-    <section class="col" aria-label="AI chat">
-      <div class="col-head">
-        <span class="dot-live" aria-hidden="true"></span>
-        <h2>2 · AI chat</h2>
-        <span class="grow"><button type="button" class="btn btn-secondary btn-sm" id="clear-chat">Clear</button></span>
-      </div>
-
-      <div class="col-scroll" id="chat-scroll">
-        <div class="chat-empty" id="chat-empty">
-          <h3>Nothing generated yet.</h3>
-          <p>Set the trip on the left and press <strong>Generate itinerary</strong>. Once a plan exists, refine it here in plain language — every message re-plans the whole trip.</p>
-        </div>
-        <div class="chat-log" id="chat-log" hidden></div>
-      </div>
-
-      <div class="suggests" id="suggests" hidden>
-        <button type="button" class="sugg">Make day 3 cheaper</button>
-        <button type="button" class="sugg">Add more food stops</button>
-        <button type="button" class="sugg">We have a toddler</button>
-        <button type="button" class="sugg">More desert, less shopping</button>
-      </div>
-
-      <form class="composer" id="composer">
-        <input class="input" id="prompt" placeholder="Generate first, then refine here…" aria-label="Message the assistant" disabled />
-        <button type="submit" class="btn btn-primary" id="send" disabled>Send</button>
-      </form>
-    </section>
-
-    <!-- ── 3 · OUTPUT ────────────────────────────────────── -->
-    <section class="col" aria-label="Itinerary, PDF and map">
-      <div class="tabs" role="tablist">
-        <button class="tab" role="tab" id="tab-itin" aria-controls="panel-itin" aria-selected="true">Itinerary</button>
-        <button class="tab" role="tab" id="tab-pdf" aria-controls="panel-pdf" aria-selected="false">PDF</button>
-        <button class="tab" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false">Map</button>
-        <span class="grow"><button type="button" class="btn btn-secondary btn-sm" id="download" disabled>Download PDF</button></span>
-      </div>
-
-      <div class="panels">
-        <div class="tabpanel" id="panel-itin" role="tabpanel" aria-labelledby="tab-itin">
-          <div id="output">
-            <div class="empty">
-              <h4>Nothing planned yet.</h4>
-              <p>Set the trip and press Generate. The itinerary appears here, the PDF renders in the next tab, and every stop plots on the map.</p>
-            </div>
+            <button class="btn btn-secondary btn-block btn-sm" type="button" id="testKeyBtn">Test key</button>
+            <p class="key-status" id="keyStatus" aria-live="polite">No key saved — running the offline planner.</p>
+            <p class="field-note">
+              Stored only in this browser. Sent nowhere except straight to Google
+              from this machine. Never commit it.
+            </p>
           </div>
         </div>
-        <div class="tabpanel" id="panel-pdf" role="tabpanel" aria-labelledby="tab-pdf" hidden>
-          <div id="pdf-empty">
-            <div class="empty"><h4>No document yet.</h4><p>Generate an itinerary and the live PDF renders here, exactly as it will download.</p></div>
-          </div>
-          <iframe id="pdf-frame" title="Generated itinerary PDF" hidden></iframe>
-        </div>
-        <div class="tabpanel" id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden>
-          <div class="map-split">
-            <iframe id="map-frame" title="Map of itinerary stops" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=United%20Arab%20Emirates&z=7&output=embed"></iframe>
-            <div class="map-stops" id="map-stops">
-              <button type="button" class="map-stop" aria-pressed="true" data-q="United Arab Emirates" data-z="7">All UAE</button>
-            </div>
-          </div>
+      </details>
+    </form>
+  </section>
+
+  <!-- ======================== Column 2 — AI chat ======================== -->
+  <section class="col col-chat" aria-labelledby="chatHeading">
+    <div class="col-head">
+      <h2 class="col-title" id="chatHeading">AI chat</h2>
+      <button class="btn btn-ghost btn-sm" type="button" id="clearChatBtn">Clear</button>
+    </div>
+
+    <div class="chat-log" id="chatLog">
+      <p class="empty" id="chatEmpty">
+        Nothing generated yet — set the trip up on the left and press
+        <strong>Generate itinerary</strong>. Once a plan exists you can refine it
+        here in plain English.
+      </p>
+    </div>
+
+    <!-- Disabled until the first itinerary exists: there is nothing to refine
+         before then, and an input that accepts text it cannot act on is worse
+         than one that says why it is waiting. -->
+    <div class="suggestions" id="suggestions">
+      <button class="btn btn-outline btn-sm suggestion" type="button" disabled>Make day 3 cheaper</button>
+      <button class="btn btn-outline btn-sm suggestion" type="button" disabled>Add more food stops</button>
+      <button class="btn btn-outline btn-sm suggestion" type="button" disabled>We have a toddler</button>
+      <button class="btn btn-outline btn-sm suggestion" type="button" disabled>More desert, less shopping</button>
+    </div>
+
+    <form class="composer" id="chatForm">
+      <label class="visually-hidden" for="chatInput">Message the planner</label>
+      <input type="text" id="chatInput" autocomplete="off"
+             placeholder="Generate first, then refine here…" disabled>
+      <button class="btn btn-primary btn-sm" type="submit" id="sendBtn" disabled>Send</button>
+    </form>
+  </section>
+
+  <!-- ========================= Column 3 — Output ======================== -->
+  <section class="col col-output" aria-labelledby="outputHeading">
+    <h2 class="visually-hidden" id="outputHeading">Output</h2>
+
+    <div class="col-head tabs-head">
+      <div class="tabs" role="tablist" aria-label="Output views">
+        <button class="tab" type="button" role="tab" id="tab-itinerary"
+                aria-controls="panel-itinerary" aria-selected="true">Itinerary</button>
+        <button class="tab" type="button" role="tab" id="tab-pdf"
+                aria-controls="panel-pdf" aria-selected="false" tabindex="-1">PDF</button>
+        <button class="tab" type="button" role="tab" id="tab-map"
+                aria-controls="panel-map" aria-selected="false" tabindex="-1">Map</button>
+      </div>
+      <button class="btn btn-primary btn-sm" type="button" id="downloadBtn" disabled>Download PDF</button>
+    </div>
+
+    <div class="panels">
+      <div class="panel-wrap" role="tabpanel" id="panel-itinerary" aria-labelledby="tab-itinerary" tabindex="0">
+        <div class="scroller" id="itineraryOut">
+          <p class="empty" id="itineraryEmpty">
+            Your day-by-day plan will appear here — every stop with a time window,
+            a reason and a price in dirhams.
+          </p>
         </div>
       </div>
-    </section>
-  </div>
-</div>
 
+      <div class="panel-wrap" role="tabpanel" id="panel-pdf" aria-labelledby="tab-pdf" tabindex="0" hidden>
+        <p class="empty" id="pdfEmpty">
+          The printable document is typeset on every generation and previewed here
+          before you download it.
+        </p>
+        <iframe class="pdf-frame" id="pdfFrame" title="Itinerary PDF preview" hidden></iframe>
+      </div>
+
+      <div class="panel-wrap map-wrap" role="tabpanel" id="panel-map" aria-labelledby="tab-map" tabindex="0" hidden>
+        <p class="empty" id="mapEmpty">
+          Generate a plan and every stop becomes a map button, labelled by day.
+        </p>
+        <div class="map-grid" id="mapGrid" hidden>
+          <iframe class="map-frame" id="mapFrame" title="Map of the selected stop"
+                  loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="map-list" id="mapList" role="group" aria-label="Stops"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ========================= Floating notes window =======================
+     Dragged by its title bar with pointer events, clamped to the viewport,
+     and auto-saved to localStorage. Position, text and hidden state all
+     survive a reload.                                                    -->
 <aside class="notes" id="notes" aria-label="Trip notes">
-  <div class="notes-bar" id="notes-bar">
-    <h4>Notes</h4>
-    <span class="acts">
-      <button class="icon-btn" id="notes-min" title="Minimise" aria-label="Minimise notes">–</button>
-      <button class="icon-btn" id="notes-close" title="Close" aria-label="Close notes">×</button>
-    </span>
+  <div class="notes-bar" id="notesBar">
+    <span class="notes-title">Notes</span>
+    <div class="notes-actions">
+      <button class="notes-btn" type="button" id="notesMin" aria-label="Minimise notes"
+              aria-expanded="true">–</button>
+      <button class="notes-btn" type="button" id="notesClose" aria-label="Close notes">×</button>
+    </div>
   </div>
-  <div class="notes-body">
-    <textarea id="notes-text" placeholder="Flight lands 06:40 — ask about early check-in&#10;Grand Mosque dress code&#10;Book desert safari for Thursday"></textarea>
-    <p class="notes-foot" id="notes-foot">Saved locally · drag the bar to move</p>
-  </div>
+  <label class="visually-hidden" for="notesText">Trip notes</label>
+  <textarea id="notesText" spellcheck="true"
+            placeholder="Flight lands 06:40 — ask about early check-in / Grand Mosque dress code / Book desert safari for Thursday"></textarea>
+  <p class="notes-status" id="notesStatus">Saved locally · drag the bar to move</p>
 </aside>
-<button type="button" class="btn btn-secondary notes-fab" id="notes-open" hidden>Notes</button>
 
-<!-- The brain of the project: itinerary planning, the Gemini
-     call, chat, map plotting, PDF export and the notes window. -->
-<script src="js/studio.js" defer></script>
+<button class="notes-fab" type="button" id="notesFab" hidden>Notes</button>
+
 </body>
 </html>
