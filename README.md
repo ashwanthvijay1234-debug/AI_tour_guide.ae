@@ -2,7 +2,8 @@
 
 ### Smart UAE AI Tourism Assistant
 
-<img width="1919" height="932" alt="The AI_tour_guide.ae landing page" src="https://github.com/user-attachments/assets/2a0080c5-7b23-440a-b13b-81d24f1bb5bd" />
+<img width="1919" height="971" alt="image" src="https://github.com/user-attachments/assets/f35243b0-0d08-4fc8-842e-bfde7a85540e" />
+
 
 A Grade 9 Artificial Intelligence school project by **Ashwanth Vijay**, built around
 **UAE Vision 2071**.
