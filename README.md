@@ -1,4 +1,9 @@
+<img width="1919" height="521" alt="image" src="https://github.com/user-attachments/assets/4c0c525a-2016-4ca6-9999-460d202cc3f8" />
+
+
+
 # AI_tour_guide.ae
+
 
 ### Smart UAE AI Tourism Assistant
 
@@ -72,6 +77,8 @@ Both modes produce something that *looks* like an itinerary. That is exactly why
 ---
 
 ## Getting a free Gemini API key
+<img width="1300" height="731" alt="image" src="https://github.com/user-attachments/assets/7f05f17a-8189-4473-ac5f-4d6661bfdba8" />
+
 
 You do not need a key to use the app. If you want a real model writing the plans:
 
@@ -295,5 +302,6 @@ and opening hours before you commit to a day.
 ---
 
 ## Licence
+<img width="1024" height="764" alt="image" src="https://github.com/user-attachments/assets/9bb67f55-d63c-4767-a8cb-2b82908d9e71" />
 
 MIT — see [LICENSE](LICENSE) for the full text.
