@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  report/explainer.html — "Code Explained", the companion PDF
+  ----------------------------------------------------------------------------
+  WHAT THIS IS
+  A plain-English walkthrough of the important parts of js/studio.js, written
+  to be read rather than submitted. Every snippet is real code from the
+  project, followed by a table that translates it line by line, and a one
+  sentence summary that can be said out loud if someone asks what it does.
+
+  It is a separate document from report.html on purpose: that one is the
+  activity submission and has to follow a fixed five-page format, this one is
+  for understanding the code.
+
+  Rendered to PDF with headless Chrome. Edit here, re-export, and the PDF
+  updates.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI_tour_guide.ae — Code Explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+
+:root {
+  --navy: #161826;
+  --ink: #1f2130;
+  --body: #3c4052;
+  --muted: #6b7086;
+  --line: #d9dbe4;
+  --line-soft: #ecedf2;
+  --paper: #ffffff;
+  --tint: #f6f7fa;
+  --purple: #5d4fa8;
+  --purple-soft: #efedf9;
+  --gold: #8a6d1f;
+  --gold-soft: #faf4e2;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+html, body { margin: 0; padding: 0; background: #8a8d99; }
+
+body {
+  font-family: var(--sans);
+  color: var(--body);
+  font-size: 8.8pt;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 15mm 14mm 13mm;
+  background: var(--paper);
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+}
+
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+@media screen { .page { margin-bottom: 12mm; box-shadow: 0 6px 26px rgba(0,0,0,0.34); } }
+@media print { html, body { background: #fff; } .page { margin: 0; box-shadow: none; } }
+
+.runhead {
+  position: absolute; top: 8mm; left: 15mm; right: 15mm;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-bottom: 2.5mm; border-bottom: 0.6pt solid var(--line);
+  font-size: 7.4pt; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+.runhead b { color: var(--ink); font-weight: 600; }
+
+.runfoot {
+  position: absolute; bottom: 8mm; left: 15mm; right: 15mm;
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 2.5mm; border-top: 0.6pt solid var(--line);
+  font-size: 7.4pt; color: var(--muted);
+}
+
+h1, h2, h3, h4 { margin: 0; color: var(--ink); font-weight: 600; line-height: 1.2; }
+
+.page-label {
+  font-size: 7.6pt; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 2mm;
+}
+
+.page-title { font-size: 17pt; letter-spacing: -0.02em; margin-bottom: 1.5mm; }
+.page-sub { font-size: 8.4pt; color: var(--muted); margin-bottom: 3.8mm; max-width: 155mm; }
+
+h3.sec {
+  font-size: 9.8pt; margin-bottom: 1.4mm;
+  padding-left: 3.5mm; border-left: 2.5pt solid var(--purple);
+}
+
+.block { margin-bottom: 2.8mm; }
+.block:last-child { margin-bottom: 0; }
+
+p { margin: 0 0 1.8mm; }
+p:last-child { margin-bottom: 0; }
+strong { color: var(--ink); font-weight: 600; }
+em { font-style: italic; }
+
+code {
+  font-family: var(--mono);
+  font-size: 7.7pt;
+  color: var(--purple);
+}
+
+ul.clean { margin: 0; padding: 0; list-style: none; }
+ul.clean li { position: relative; padding-left: 4.5mm; margin-bottom: 1mm; }
+ul.clean li::before {
+  content: ''; position: absolute; left: 0; top: 1.9mm;
+  width: 2mm; height: 2mm; border-radius: 50%; background: var(--gold);
+}
+ul.clean li:last-child { margin-bottom: 0; }
+
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+
+/* --- Cover ---------------------------------------------------------------- */
+
+.cover { padding: 0; display: flex; flex-direction: column; }
+
+.cover-band {
+  background: var(--navy); color: #e9e9ed;
+  padding: 30mm 15mm 20mm; position: relative;
+}
+.cover-band::after {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 15px, rgba(201,162,39,0.09) 15px 16px),
+    repeating-linear-gradient(-45deg, transparent 0 15px, rgba(201,162,39,0.09) 15px 16px);
+}
+.cover-band > * { position: relative; z-index: 1; }
+
+.cover-kicker {
+  font-size: 8pt; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #a9abbd; margin-bottom: 5mm;
+}
+.cover-title { font-size: 32pt; letter-spacing: -0.035em; color: #fff; line-height: 1.05; margin-bottom: 4mm; }
+.cover-title span { color: #b9addf; font-style: italic; font-weight: 500; }
+.cover-tagline { font-size: 10.5pt; color: #c3c5d2; max-width: 140mm; }
+
+.cover-rule { height: 4px; background: var(--purple); }
+
+.cover-body { flex: 1; padding: 14mm 15mm; display: flex; flex-direction: column; }
+
+.toc { width: 100%; border-collapse: collapse; }
+.toc td { padding: 2.8mm 0; border-bottom: 0.6pt solid var(--line); vertical-align: top; }
+.toc td.n {
+  width: 12mm; font-family: var(--mono); font-size: 9pt;
+  color: var(--gold); font-weight: 500;
+}
+.toc td.t { font-size: 10.5pt; color: var(--ink); font-weight: 500; }
+.toc td.d { font-size: 8.6pt; color: var(--muted); padding-left: 5mm; }
+
+.cover-foot {
+  margin-top: auto; padding-top: 6mm; border-top: 0.6pt solid var(--line);
+  font-size: 8.4pt; color: var(--muted);
+}
+
+/* --- Code ----------------------------------------------------------------- */
+
+figure.code { margin: 0 0 2.2mm; }
+
+figure.code figcaption {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 4mm;
+  padding: 1.8mm 3mm; border: 0.6pt solid var(--line); border-bottom: 0;
+  border-radius: 2mm 2mm 0 0; background: var(--ink); color: #cfd2de;
+  font-size: 7.6pt; letter-spacing: 0.04em;
+}
+figure.code figcaption b { color: #fff; font-weight: 600; }
+figure.code figcaption span { color: #9ea3b8; font-family: var(--mono); font-size: 7.2pt; }
+
+pre {
+  margin: 0; padding: 2.1mm 2.6mm;
+  border: 0.6pt solid var(--line); border-radius: 0 0 2mm 2mm;
+  background: #fbfbfd; font-family: var(--mono);
+  font-size: 6.6pt; line-height: 1.34; color: #24273a;
+  white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word;
+}
+
+.t-com { color: #7c8296; font-style: italic; }
+.t-str { color: #8a5a1f; }
+.t-key { color: #6a3fb5; font-weight: 500; }
+.t-num { color: #1f6b58; }
+.t-tag { color: #6a3fb5; }
+.t-att { color: #8a5a1f; }
+.t-prop { color: #1f4f8a; }
+
+/* --- The line-by-line translation table ----------------------------------- */
+
+table.explain { width: 100%; border-collapse: collapse; margin-top: 1.6mm; }
+
+table.explain td {
+  padding: 1.1mm 2mm;
+  border-bottom: 0.6pt solid var(--line-soft);
+  vertical-align: top;
+  font-size: 7.8pt;
+}
+table.explain tr:last-child td { border-bottom: 0; }
+table.explain tr:nth-child(even) td { background: #fafbfd; }
+
+table.explain td.f {
+  width: 50mm;
+  font-family: var(--mono);
+  font-size: 6.9pt;
+  color: var(--purple);
+  line-height: 1.4;
+}
+
+table.explain td.f i { color: var(--muted); font-family: var(--sans); font-size: 7.6pt; font-style: normal; }
+
+/* --- One-sentence summary ------------------------------------------------- */
+
+.oneline {
+  border-left: 2.5pt solid var(--gold);
+  background: var(--gold-soft);
+  padding: 2.2mm 2.8mm;
+  border-radius: 0 2mm 2mm 0;
+  font-size: 8.1pt;
+  margin-top: 2mm;
+}
+.oneline b {
+  display: block; font-size: 7.2pt; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 1mm;
+}
+
+.why {
+  border-left: 2.5pt solid var(--purple);
+  background: var(--purple-soft);
+  padding: 2.2mm 2.8mm;
+  border-radius: 0 2mm 2mm 0;
+  font-size: 8.1pt;
+  margin-top: 2mm;
+}
+
+/* --- Flow diagram --------------------------------------------------------- */
+
+.flow { display: flex; align-items: stretch; gap: 0; margin: 3mm 0; }
+
+.flow .step {
+  flex: 1;
+  border: 0.7pt solid var(--line);
+  border-radius: 2mm;
+  background: var(--tint);
+  padding: 2.6mm 2mm;
+  text-align: center;
+  font-size: 7.8pt;
+  line-height: 1.35;
+}
+.flow .step b { display: block; color: var(--ink); font-size: 8.2pt; margin-bottom: 0.8mm; }
+.flow .step.dark { background: var(--navy); border-color: var(--navy); color: #e9e9ed; }
+.flow .step.dark b { color: #fff; }
+.flow .step.gold { background: var(--gold-soft); border-color: var(--gold); }
+.flow .step.gold b { color: var(--gold); }
+
+.flow .arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 7mm; color: var(--muted); font-size: 11pt;
+}
+
+/* --- Small table ---------------------------------------------------------- */
+
+table.grid { width: 100%; border-collapse: collapse; font-size: 7.8pt; }
+table.grid th {
+  text-align: left; padding: 1.8mm 2.2mm; background: var(--ink); color: #fff;
+  font-weight: 600; font-size: 7.8pt; letter-spacing: 0.06em;
+}
+table.grid td { padding: 1.3mm 2mm; border-bottom: 0.6pt solid var(--line-soft); vertical-align: top; }
+table.grid tr:nth-child(even) td { background: #fafbfd; }
+table.grid code { font-size: 7.6pt; }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<section class="page cover">
+  <div class="cover-band">
+    <p class="cover-kicker">AI_tour_guide.ae · Companion document</p>
+    <h1 class="cover-title">Code Explained<br><span>how my project actually works</span></h1>
+    <p class="cover-tagline">
+      Every important piece of the code, in plain English — what it does, how it
+      works line by line, and why it is written that way.
+    </p>
+  </div>
+  <div class="cover-rule"></div>
+
+  <div class="cover-body">
+    <table class="toc">
+      <tr><td class="n">01</td><td class="t">The big picture</td><td class="d">Which file does what, and the order the browser loads them in.</td></tr>
+      <tr><td class="n">02</td><td class="t">Pressing Generate</td><td class="d">The one function that runs the whole app, step by step.</td></tr>
+      <tr><td class="n">03</td><td class="t">Writing the prompt</td><td class="d">How four settings become instructions a model can follow.</td></tr>
+      <tr><td class="n">04</td><td class="t">Calling the API</td><td class="d">The actual HTTP request to Google Gemini, and its reply.</td></tr>
+      <tr><td class="n">05</td><td class="t">When things go wrong</td><td class="d">The fallback chain and reading the reply safely.</td></tr>
+      <tr><td class="n">06</td><td class="t">The offline planner</td><td class="d">Making a plan with no internet, and making it vary.</td></tr>
+      <tr><td class="n">07</td><td class="t">Drawing it and printing it</td><td class="d">Building the DOM safely, and typesetting the PDF.</td></tr>
+      <tr><td class="n">08</td><td class="t">Small things that matter</td><td class="d">Storage, animation and the draggable notes window.</td></tr>
+    </table>
+
+    <div class="cover-foot">
+      Ashwanth Vijay · Grade 9 – C · Artificial Intelligence · 2026 – 2027<br>
+      All code shown is taken directly from the project files.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 01 — BIG PICTURE ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>01 · The big picture</span></div>
+
+  <p class="page-label">Part 01</p>
+  <h2 class="page-title">The big picture</h2>
+  <p class="page-sub">Before any single function makes sense, it helps to know what the program is shaped like.</p>
+
+  <div class="block">
+    <h3 class="sec">There are only two pages</h3>
+    <p>
+      <code>index.html</code> is the landing page that explains the project. <code>studio.html</code>
+      is the app. They share the first two stylesheets and nothing else. There is no server, no
+      framework and no build step — the browser opens the file and runs it.
+    </p>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Load order is deliberate</h3>
+    <table class="grid">
+      <tr><th style="width:34mm">File</th><th style="width:16mm">Order</th><th>Why it is in that position</th></tr>
+      <tr><td><code>tokens.css</code></td><td>1st</td><td>Defines the variables. Nothing can use a variable before it exists.</td></tr>
+      <tr><td><code>base.css</code></td><td>2nd</td><td>The reset and shared controls, built on those variables.</td></tr>
+      <tr><td><code>studio.css</code></td><td>3rd</td><td>Last, so when two rules have equal weight this one wins and the page can override the shared defaults.</td></tr>
+      <tr><td><code>studio.js</code></td><td>deferred</td><td><code>defer</code> means "download now, run after the HTML is parsed", so the script never looks for an element that has not been created yet.</td></tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Everything is inside one wrapper</h3>
+    <figure class="code">
+      <figcaption><b>The IIFE</b><span>js/studio.js</span></figcaption>
+<pre data-lang="js">(function () {
+  'use strict';
+
+  // ... the entire program lives in here ...
+
+}());</pre>
+    </figure>
+    <table class="explain">
+      <tr><td class="f">(function () { ... }())</td><td>An <strong>IIFE</strong> — Immediately Invoked Function Expression. The function is created and called at once. Everything declared inside it is invisible to the rest of the page, so none of my variable names can clash with anything else.</td></tr>
+      <tr><td class="f">'use strict';</td><td>Turns on strict mode, which makes JavaScript report mistakes instead of quietly guessing — for example, using a variable I forgot to declare becomes an error rather than a silent global.</td></tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">The path a plan takes</h3>
+    <div class="flow">
+      <div class="step"><b>Settings</b>4 inputs from the form</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><b>Prompt</b>settings become instructions</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step dark"><b>Gemini</b>writes JSON</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><b>Parse</b>JSON becomes data</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step gold"><b>Output</b>screen · PDF · map</div>
+    </div>
+    <p>
+      With no API key the middle box is replaced by the offline planner, which builds the same
+      shape of data from a hard-coded list of real UAE places. Everything after that point is
+      identical — which is exactly why the two modes look the same on screen, and why the app has
+      to state which one produced the plan.
+    </p>
+    <div class="oneline">
+      <b>In one sentence</b>
+      Four settings become a prompt, a model turns the prompt into JSON, and the JSON is drawn on
+      screen, typeset into a PDF and plotted on a map.
+    </div>
+  </div>
+
+  <div class="runfoot"><span>The big picture</span><span>Page 2 of 9</span></div>
+</section>
+
+<!-- ===================== 02 — PRESSING GENERATE ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>02 · Pressing Generate</span></div>
+
+  <p class="page-label">Part 02</p>
+  <h2 class="page-title">Pressing Generate</h2>
+  <p class="page-sub">One function, <code>generate()</code>, drives the entire application. This is its skeleton.</p>
+
+  <figure class="code">
+    <figcaption><b>The shape of the whole app</b><span>js/studio.js · generate()</span></figcaption>
+<pre data-lang="js">async function generate(userMessage) {
+  if (state.busy) return;              // 1
+  state.busy = true;
+
+  var cfg = readConfig();              // 2
+  var key = apiKey();                  // 3
+  var message = userMessage || describeSettings(cfg);
+
+  pushMessage('me', message);          // 4
+  setGenerating(true, key ? 'Thinking' : 'Planning');
+  var thinking = showThinking();       // 5
+  setBusyPanels(true);                 // 6
+
+  if (!key) {                          // 7
+    await sleep(700);
+    var plan = offlinePlan(cfg, state.refinements);
+    finishWithPlan(plan, cfg, notice('info', '...offline planner...'));
+    done();
+    return;
+  }
+
+  try {                                // 8
+    var chain  = await buildChain(key, model);
+    var result = await callWithFallback(key, chain, body, onHop);
+    var parsed = parseJSON(result.text);
+    finishWithPlan(parsed, cfg, null);
+    done();
+  } catch (err) {                      // 9
+    finishWithPlan(offlinePlan(cfg, state.refinements), cfg,
+                   notice('error', 'The AI request failed: ' + err.message));
+    done();
+  }
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f"><i>1</i> if (state.busy) return;</td><td>A <strong>re-entry guard</strong>. If a plan is already being built, a second click does nothing. Without this, two runs would overlap and fight over the same output panel.</td></tr>
+    <tr><td class="f"><i>2</i> readConfig()</td><td>Reads the four settings out of the form — destination, days, budget, and which interest chips are ticked — into one plain object.</td></tr>
+    <tr><td class="f"><i>3</i> apiKey()</td><td>Reads the key box. This single value decides the entire path below: no key means offline, a key means Gemini.</td></tr>
+    <tr><td class="f"><i>4</i> pushMessage('me', …)</td><td>Shows the user's own message in the chat immediately, before any waiting starts, so the interface responds to the click straight away.</td></tr>
+    <tr><td class="f"><i>5</i> showThinking()</td><td>Adds the three bouncing dots. It carries <code>aria-label="Assistant is typing"</code> because three animated dots mean nothing to a screen reader.</td></tr>
+    <tr><td class="f"><i>6</i> setBusyPanels(true)</td><td>Raises the blurred "generating" veil over <em>both</em> the Itinerary and PDF panels — you can switch tabs mid-run, and the PDF tab must never show the previous trip as if it were the new one.</td></tr>
+    <tr><td class="f"><i>7</i> if (!key) { … }</td><td>The offline path. The 700 ms pause is deliberate: the planner finishes in about two milliseconds, and an answer that instant feels fake.</td></tr>
+    <tr><td class="f"><i>8</i> try { … }</td><td>The AI path: work out which models the key can call, call them, parse the reply, show the plan.</td></tr>
+    <tr><td class="f"><i>9</i> catch (err) { … }</td><td>If every model failed, show the offline plan anyway and say what went wrong. Being told honestly and given something that works beats being left with nothing.</td></tr>
+  </table>
+
+  <div class="why">
+    <strong>Why <code>async</code> and <code>await</code>?</strong> Talking to Gemini takes seconds, and
+    JavaScript cannot simply stop and wait — that would freeze the page. <code>await</code> lets me
+    write the code top-to-bottom as if it were waiting, while the browser stays responsive
+    underneath. Any function containing <code>await</code> must be marked <code>async</code>.
+  </div>
+
+  <div class="oneline">
+    <b>In one sentence</b>
+    <code>generate()</code> locks the interface, reads the settings, takes either the offline path or
+    the Gemini path, and always finishes by showing a plan and unlocking again.
+  </div>
+
+  <div class="runfoot"><span>Pressing Generate</span><span>Page 3 of 9</span></div>
+</section>
+
+<!-- ===================== 03 — THE PROMPT ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>03 · Writing the prompt</span></div>
+
+  <p class="page-label">Part 03</p>
+  <h2 class="page-title">Writing the prompt</h2>
+  <p class="page-sub">This is the actual AI work of the project. The model is only as good as the instructions it is given.</p>
+
+  <figure class="code">
+    <figcaption><b>Building the instructions</b><span>js/studio.js · buildPrompt()</span></figcaption>
+<pre data-lang="js">var lines = [];
+lines.push('You are an expert United Arab Emirates travel planner.');
+lines.push('- Destination: ' + cfg.destination);
+lines.push('- Duration: ' + cfg.days + ' days');
+lines.push('- Budget per person: ' + aed(cfg.budget) + ' (' + tier.name + ')');
+
+if (notes.length) {
+  lines.push('TRAVELLER NOTES, most recent last - obey these above all:');
+  notes.forEach(function (note, i) { lines.push((i + 1) + '. ' + note); });
+}
+
+lines.push('RULES');
+lines.push('- Group each day geographically to minimise travel.');
+lines.push('- Respect UAE realities: summer midday heat, Friday prayer timings,');
+lines.push('  modest dress at mosques, Ramadan hours, drive times.');
+lines.push('- 4 to 6 stops per day, each with a time window, a reason, an AED cost.');
+
+lines.push('Reply with ONLY valid JSON. No markdown fences. Exactly this shape:');
+lines.push('{"title":"","summary":"","days":[...],"estimatedTotal":"AED 5,400"}');
+
+return lines.join('\n');</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">'You are an expert …'</td><td>The <strong>role</strong>. Telling a model who it is changes the whole answer. "An expert UAE travel planner" produces different writing from a general assistant.</td></tr>
+    <tr><td class="f">lines.push(…)</td><td>The prompt is built as an array of lines and joined at the end. This is far easier to read and change than one enormous string with <code>+</code> signs everywhere.</td></tr>
+    <tr><td class="f">TRAVELLER NOTES,<br>most recent last</td><td>Everything typed in the chat is collected and sent every time. Saying <em>most recent last</em> and <em>obey these above all</em> tells the model which instruction wins when two notes conflict.</td></tr>
+    <tr><td class="f">'Group each day<br>geographically'</td><td>A <strong>constraint</strong>, and the reason the plans are usable. Without it the model happily sends you across the city and back before lunch.</td></tr>
+    <tr><td class="f">'Respect UAE realities'</td><td>Local knowledge the model has but will not apply unless asked: heat, prayer times, dress codes, real drive times between emirates.</td></tr>
+    <tr><td class="f">'Reply with ONLY<br>valid JSON'</td><td>The <strong>output contract</strong>. Giving the exact shape means the reply can be fed straight into the renderer instead of being read by a human.</td></tr>
+    <tr><td class="f">lines.join('\\n')</td><td>Joins everything with newlines into the single string that gets sent.</td></tr>
+  </table>
+
+  <div class="why">
+    <strong>The idea to remember.</strong> An unconstrained model writes pleasant paragraphs.
+    Pinned to a role, a currency, a pacing rule and an exact JSON shape, the same model becomes a
+    <em>reliable component</em> that the rest of the program can depend on. That shift is what
+    prompt engineering actually means.
+  </div>
+
+  <div class="block" style="margin-top:4mm">
+    <h3 class="sec">One extra trick</h3>
+    <figure class="code">
+      <figcaption><b>Making Regenerate do something visible</b><span>js/studio.js</span></figcaption>
+<pre data-lang="js">if (state.aiAttempts &gt; 1) {
+  lines.push('- This traveller has seen a plan for these settings already. ' +
+             'Choose a noticeably different mix of stops.');
+}</pre>
+    </figure>
+    <p class="oneline" style="margin-top:2.5mm">
+      <b>Why</b>
+      The same prompt at the same settings gets much the same answer, so Regenerate looked broken.
+      From the second attempt onwards the prompt explicitly asks for something different.
+    </p>
+  </div>
+
+  <div class="runfoot"><span>Writing the prompt</span><span>Page 4 of 9</span></div>
+</section>
+
+<!-- ===================== 04 — CALLING THE API ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>04 · Calling the API</span></div>
+
+  <p class="page-label">Part 04</p>
+  <h2 class="page-title">Calling the API</h2>
+  <p class="page-sub">The single most important piece of code in the project: the HTTP request that reaches Google.</p>
+
+  <figure class="code">
+    <figcaption><b>The request</b><span>js/studio.js · callModel()</span></figcaption>
+<pre data-lang="js">var API = 'https://generativelanguage.googleapis.com/v1beta';
+
+async function callModel(key, model, body) {
+  var res = await fetch(
+    API + '/models/' + encodeURIComponent(model) +
+    ':generateContent?key=' + encodeURIComponent(key),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }
+  );
+
+  var data = null;
+  try { data = await res.json(); } catch (err) { data = null; }
+
+  if (!res.ok) throw httpError(res, data);
+
+  var parts = data.candidates[0].content.parts;
+  var text = parts.map(function (p) { return p.text || ''; }).join('').trim();
+
+  if (!text) throw new Error('Empty response from ' + model);
+  return text;
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">fetch(url, options)</td><td>The browser's built-in way of making an HTTP request. It returns a <em>promise</em>, which is why it needs <code>await</code>.</td></tr>
+    <tr><td class="f">':generateContent'</td><td>The Gemini endpoint that generates text. The model name goes in the path, so a different model is a different URL.</td></tr>
+    <tr><td class="f">encodeURIComponent(…)</td><td>Escapes anything in the model name or key that would otherwise break the URL. Never paste raw values into a URL.</td></tr>
+    <tr><td class="f">'?key=' + key</td><td>How Gemini authenticates. Because there is no backend, the key travels from this browser straight to Google and nowhere else.</td></tr>
+    <tr><td class="f">method: 'POST'</td><td>The prompt is data being <em>sent</em>, not a page being fetched, so it is a POST with a body.</td></tr>
+    <tr><td class="f">JSON.stringify(body)</td><td>Turns my JavaScript object into the JSON text the API expects. Its opposite, <code>res.json()</code>, turns the reply back into an object.</td></tr>
+    <tr><td class="f">if (!res.ok) throw</td><td><code>fetch</code> does <strong>not</strong> throw on 404 or 500 — it resolves normally with <code>ok: false</code>. Forgetting this check is the classic <code>fetch</code> bug.</td></tr>
+    <tr><td class="f">data.candidates[0]<br>.content.parts</td><td>Where the answer actually lives. Gemini can return several candidates, each holding parts; this takes the first candidate and joins its parts into one string.</td></tr>
+  </table>
+
+  <div class="block" style="margin-top:3mm">
+    <h3 class="sec">What is sent, and what comes back</h3>
+    <div class="cols2">
+      <figure class="code">
+        <figcaption><b>Sent</b><span>request body</span></figcaption>
+<pre data-lang="js">{
+  contents: [{
+    role: 'user',
+    parts: [{ text: thePrompt }]
+  }],
+  generationConfig: {
+    temperature: 0.9,
+    responseMimeType: 'application/json'
+  }
+}</pre>
+      </figure>
+      <figure class="code">
+        <figcaption><b>Received</b><span>response shape</span></figcaption>
+<pre data-lang="js">{
+  candidates: [{
+    content: {
+      parts: [{ text: '{"title": ...}' }]
+    }
+  }]
+}</pre>
+      </figure>
+    </div>
+    <table class="explain">
+      <tr><td class="f">temperature: 0.9</td><td>How adventurous the model is allowed to be. Near 0 it gives almost the same answer every time; 0.9 is high enough that two runs differ without becoming strange.</td></tr>
+      <tr><td class="f">responseMimeType</td><td>Asks the API itself to enforce JSON, as a second line of defence behind the instruction in the prompt.</td></tr>
+    </table>
+  </div>
+
+  <div class="runfoot"><span>Calling the API</span><span>Page 5 of 9</span></div>
+</section>
+
+<!-- ===================== 05 — WHEN THINGS GO WRONG ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>05 · When things go wrong</span></div>
+
+  <p class="page-label">Part 05</p>
+  <h2 class="page-title">When things go wrong</h2>
+  <p class="page-sub">Most of the interesting code in this project is not the happy path — it is everything around it.</p>
+
+  <figure class="code">
+    <figcaption><b>Trying model after model</b><span>js/studio.js · callWithFallback()</span></figcaption>
+<pre data-lang="js">var RETRYABLE = { 404: true, 429: true, 500: true, 503: true, 504: true };
+
+async function callWithFallback(key, chain, body, onHop) {
+  var firstError = null;
+
+  for (var i = 0; i &lt; chain.length; i++) {
+    try {
+      var text = await callModel(key, chain[i], body);
+      return { text: text, model: chain[i], fellBack: i &gt; 0 };
+    } catch (err) {
+      if (!firstError) firstError = err;
+      if (!RETRYABLE[err.status] || i === chain.length - 1) throw firstError;
+      onHop(chain[i], chain[i + 1]);
+      await sleep(400);
+    }
+  }
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">chain</td><td>A list of model names to try in order, already filtered so it only contains models this key can really call.</td></tr>
+    <tr><td class="f">RETRYABLE</td><td>Only some failures are worth retrying: 404 (model gone), 429 (rate limited), 500/503/504 (Google having a bad moment). A 400 means <em>my</em> request was wrong, so trying another model would fail identically.</td></tr>
+    <tr><td class="f">if (!firstError)<br>firstError = err;</td><td>Keeps the <strong>first</strong> error, never the last. The first came from the model the user actually chose. Reporting the last one made a bad key show up as "gemini-1.5-pro not found" — the name of a model nobody picked.</td></tr>
+    <tr><td class="f">onHop(…)</td><td>Posts a line into the chat: "gemini-X is busy — falling back to gemini-Y". A slow request should never look like a frozen one.</td></tr>
+    <tr><td class="f">await sleep(400)</td><td>A short pause before retrying, so a rate limit is not hit again immediately.</td></tr>
+  </table>
+
+  <div class="why">
+    <strong>The bug this was written for.</strong> The first version had model names hard-coded.
+    Google retired them, every request came back 404, and the app silently fell back to the offline
+    planner forever — with a perfectly valid key sitting in the box. Now it asks the API which
+    models exist before trusting any name.
+  </div>
+
+  <figure class="code" style="margin-top:4mm">
+    <figcaption><b>Reading a reply that is not quite JSON</b><span>js/studio.js · parseJSON()</span></figcaption>
+<pre data-lang="js">function parseJSON(text) {
+  var cleaned = String(text)
+    .replace(/^\s*```(?:json)?\s*/i, '')
+    .replace(/\s*```\s*$/, '')
+    .trim();
+
+  try { return JSON.parse(cleaned); } catch (err) { }
+
+  var first = cleaned.indexOf('{');
+  var last  = cleaned.lastIndexOf('}');
+  if (first !== -1 &amp;&amp; last &gt; first) {
+    try { return JSON.parse(cleaned.slice(first, last + 1)); } catch (err) { }
+  }
+
+  return null;
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">.replace(/^\s*```…/)</td><td>Strips a markdown code fence. Models add them out of habit even when told not to, and <code>JSON.parse</code> chokes on the backticks.</td></tr>
+    <tr><td class="f">try { JSON.parse } catch</td><td>First attempt on the cleaned text. If it throws, we do not give up — we fall through to attempt two.</td></tr>
+    <tr><td class="f">indexOf('{') …<br>lastIndexOf('}')</td><td>Second attempt: take everything between the first opening brace and the last closing one. This rescues replies that begin "Sure! Here is your plan: {…".</td></tr>
+    <tr><td class="f">return null;</td><td>Signals "this was not JSON". The caller then displays the model's prose as text rather than showing an error, so a usable answer is never thrown away over its formatting.</td></tr>
+  </table>
+
+  <div class="runfoot"><span>When things go wrong</span><span>Page 6 of 9</span></div>
+</section>
+
+<!-- ===================== 06 — OFFLINE PLANNER ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>06 · The offline planner</span></div>
+
+  <p class="page-label">Part 06</p>
+  <h2 class="page-title">The offline planner</h2>
+  <p class="page-sub">The part that works with no internet and no key — and the maths that stops it repeating itself.</p>
+
+  <div class="block">
+    <h3 class="sec">The problem it had to solve</h3>
+    <p>
+      The planner is a <strong>pure function</strong>: the same settings in, the same plan out. That is
+      normally a good property, but it meant pressing Generate twice produced an identical plan,
+      which reads as "the AI is broken" — and in demo mode there is no AI to blame.
+    </p>
+  </div>
+
+  <figure class="code">
+    <figcaption><b>A random number generator I control</b><span>js/studio.js · seeded()</span></figcaption>
+<pre data-lang="js">function seeded(seed) {
+  var s = (Math.imul(seed ^ 0x9e3779b9, 2654435761) &gt;&gt;&gt; 0) || 1;
+  return function () {
+    s = (Math.imul(s, 1664525) + 1013904223) &gt;&gt;&gt; 0;
+    return s / 4294967296;
+  };
+}
+
+function shuffled(list, rnd) {
+  var a = list.slice();
+  for (var i = a.length - 1; i &gt; 0; i--) {
+    var j = Math.floor(rnd() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">seeded(seed)</td><td>Returns a <em>function</em> that produces numbers between 0 and 1 — the same job as <code>Math.random()</code>, except the sequence is decided entirely by the seed I hand it.</td></tr>
+    <tr><td class="f">seed ^ 0x9e3779b9<br>Math.imul(…)</td><td>A hashing step. Seeds 1, 2 and 3 are very close together, and without scrambling them first the resulting sequences start out nearly identical.</td></tr>
+    <tr><td class="f">s * 1664525<br>+ 1013904223</td><td>A <strong>linear congruential generator</strong> — multiply, add, wrap around. Simple, fast, and perfectly good for shuffling a list.</td></tr>
+    <tr><td class="f">&gt;&gt;&gt; 0</td><td>Forces the result back into a 32-bit unsigned integer so the numbers wrap instead of growing forever.</td></tr>
+    <tr><td class="f">s / 4294967296</td><td>Divides by 2³² to land in the 0–1 range that the shuffle expects.</td></tr>
+    <tr><td class="f">shuffled(list, rnd)</td><td>A <strong>Fisher–Yates shuffle</strong>: walk the list backwards, swapping each item with a random earlier one. Every ordering is equally likely.</td></tr>
+    <tr><td class="f">a = list.slice()</td><td>Copies the array first, so the original pool of places is never reordered.</td></tr>
+  </table>
+
+  <div class="why">
+    <strong>Why seeded instead of <code>Math.random()</code>?</strong> One seed always gives one
+    ordering. That keeps the planner reproducible and testable — if I want to see the same plan
+    again, I use the same seed. A session counter feeds the seed and is saved to
+    <code>localStorage</code>, so reloading the page does not rewind the planner to its first plan.
+  </div>
+
+  <div class="block" style="margin-top:4mm">
+    <h3 class="sec">Reacting to the chat, honestly</h3>
+    <figure class="code">
+      <figcaption><b>Pattern matching, not understanding</b><span>js/studio.js</span></figcaption>
+<pre data-lang="js">var RX_LIGHTER = /toddler|kid|child|family|slow|light|relax|tired|elderly/i;
+var RX_CHEAPER = /cheap|budget|less|afford|save/i;
+
+if (RX_LIGHTER.test(joined)) perDayStops = 3;   // fewer stops per day</pre>
+    </figure>
+    <table class="explain">
+      <tr><td class="f">/…|…|…/i</td><td>A regular expression listing words that suggest a slower trip. The <code>i</code> makes it case-insensitive.</td></tr>
+      <tr><td class="f">.test(joined)</td><td>Returns true if any of those words appear anywhere in the chat notes.</td></tr>
+    </table>
+    <div class="oneline">
+      <b>Be honest about this</b>
+      This is keyword spotting, not comprehension — and the app says so in the chat. Only the Gemini
+      path genuinely understands a note like "make day 4 lighter, we have a toddler".
+    </div>
+  </div>
+
+  <div class="runfoot"><span>The offline planner</span><span>Page 7 of 9</span></div>
+</section>
+
+<!-- ===================== 07 — DRAWING AND PRINTING ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>07 · Drawing it and printing it</span></div>
+
+  <p class="page-label">Part 07</p>
+  <h2 class="page-title">Drawing it and printing it</h2>
+  <p class="page-sub">Turning the data back into something on screen, and then onto paper.</p>
+
+  <figure class="code">
+    <figcaption><b>Building elements safely</b><span>js/studio.js · el()</span></figcaption>
+<pre data-lang="js">function el(tag, className, text) {
+  var node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined &amp;&amp; text !== null) node.textContent = String(text);
+  return node;
+}</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">document<br>.createElement(tag)</td><td>Creates a real element object — a <code>div</code>, a <code>span</code> — rather than writing HTML as a string.</td></tr>
+    <tr><td class="f">node.textContent = …</td><td>Sets the element's <em>text</em>. Anything that looks like a tag is displayed as characters, not interpreted as markup.</td></tr>
+    <tr><td class="f"><i>never</i> innerHTML</td><td>This is the security point. The content comes from a language model, so it is untrusted input. If a model returned <code>&lt;img onerror=…&gt;</code> as a stop title, <code>innerHTML</code> would run it — <code>textContent</code> just displays it.</td></tr>
+  </table>
+
+  <div class="why">
+    <strong>The principle.</strong> Treat AI output exactly like something typed by a stranger:
+    display it, never execute it. Every single node in the itinerary, the map list and the chat is
+    built with this helper.
+  </div>
+
+  <figure class="code" style="margin-top:4mm">
+    <figcaption><b>Typesetting the PDF</b><span>js/studio.js · buildPDF()</span></figcaption>
+<pre data-lang="js">var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+
+doc.setFillColor(22, 24, 38);
+doc.rect(0, 0, pageW, 116, 'F');
+doc.setTextColor(145, 132, 217);
+doc.text(plan.title, margin, 94);
+
+function need(height) {
+  if (y + height &lt;= pageH - 56) return;
+  doc.addPage();
+  y = margin + 18;
+}
+
+if (state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
+state.pdfUrl = URL.createObjectURL(doc.output('blob'));
+pdfFrame.src = state.pdfUrl + '#view=FitH';</pre>
+  </figure>
+
+  <table class="explain">
+    <tr><td class="f">unit: 'pt',<br>format: 'a4'</td><td>Work in points on an A4 page — the units a printed document is actually measured in.</td></tr>
+    <tr><td class="f">doc.rect(…, 'F')</td><td>Draws the navy header band. <code>'F'</code> means fill it rather than outline it.</td></tr>
+    <tr><td class="f">doc.text(str, x, y)</td><td>Writes real, selectable text at a position. This is why the output can be searched and copied — it is not a screenshot.</td></tr>
+    <tr><td class="f">need(height)</td><td>My own page-break helper: before drawing a block, check it fits; if not, start a new page. This stops a day heading landing alone at the foot of a page.</td></tr>
+    <tr><td class="f">createObjectURL(blob)</td><td>Turns the finished document into a temporary URL the iframe can display, so you see exactly what will download.</td></tr>
+    <tr><td class="f">revokeObjectURL(…)</td><td>Releases the <em>previous</em> URL first. Without this, every regeneration leaks a whole PDF into memory for as long as the tab is open.</td></tr>
+  </table>
+
+  <div class="runfoot"><span>Drawing it and printing it</span><span>Page 8 of 9</span></div>
+</section>
+
+<!-- ===================== 08 — SMALL THINGS ===================== -->
+<section class="page">
+  <div class="runhead"><span><b>Code Explained</b> · AI_tour_guide.ae</span><span>08 · Small things that matter</span></div>
+
+  <p class="page-label">Part 08</p>
+  <h2 class="page-title">Small things that matter</h2>
+  <p class="page-sub">Three short pieces of code that are easy to miss but worth being able to explain.</p>
+
+  <div class="block">
+    <h3 class="sec">Storage that cannot break the page</h3>
+    <figure class="code">
+      <figcaption><b>Every read and write is wrapped</b><span>js/studio.js</span></figcaption>
+<pre data-lang="js">function save(name, value) {
+  try { window.localStorage.setItem(name, value); } catch (err) { }
+}</pre>
+    </figure>
+    <table class="explain">
+      <tr><td class="f">try { … } catch (err) { }</td><td><code>localStorage</code> <strong>throws</strong> in private browsing and under <code>file://</code> in some browsers. Nothing stored here — a remembered key, some notes — is important enough to break the whole page over, so failure is simply ignored.</td></tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">The typing animation</h3>
+    <figure class="code">
+      <figcaption><b>Revealing text a few characters per frame</b><span>js/studio.js · typeOut()</span></figcaption>
+<pre data-lang="js">var cpf = Math.min(9, Math.max(1, Math.ceil(text.length / frames)));
+
+(function step() {
+  if (token.cancelled) { node.textContent = text; resolve(); return; }
+  var stick = chatScrolledToBottom();
+  shown += cpf;
+  node.textContent = text.slice(0, shown);
+  if (stick) dom.chatLog.scrollTop = dom.chatLog.scrollHeight;
+  if (shown &lt; text.length) window.requestAnimationFrame(step);
+}());</pre>
+    </figure>
+    <table class="explain">
+      <tr><td class="f">requestAnimationFrame</td><td>Runs the next step just before the screen repaints, so the animation stays smooth — and it <em>pauses automatically</em> in a background tab, which <code>setInterval</code> would not.</td></tr>
+      <tr><td class="f">Math.min(9,<br>Math.max(1, …))</td><td>Clamps the speed between 1 and 9 characters a frame, so a short reply still feels typed and a long one does not outstay its welcome.</td></tr>
+      <tr><td class="f">token.cancelled</td><td>A cancellation flag. Starting a second generation cancels the first, so two messages can never type themselves at once.</td></tr>
+      <tr><td class="f">if (stick) … scrollTop</td><td>Only auto-scrolls if the user was already at the bottom. Yanking the view back while someone is reading an earlier message is the fastest way to make a chat feel hostile.</td></tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Dragging the notes window</h3>
+    <figure class="code">
+      <figcaption><b>Pointer events with capture</b><span>js/studio.js · initNotes()</span></figcaption>
+<pre data-lang="js">bar.addEventListener('pointerdown', function (event) {
+  dragging = true;
+  var rect = notes.getBoundingClientRect();
+  offsetX = event.clientX - rect.left;
+  offsetY = event.clientY - rect.top;
+  bar.setPointerCapture(event.pointerId);
+});
+
+var x = Math.min(Math.max(0, event.clientX - offsetX), maxX);</pre>
+    </figure>
+    <table class="explain">
+      <tr><td class="f">pointerdown</td><td>Pointer events cover mouse, touch and pen with one set of handlers, instead of writing mouse and touch versions separately.</td></tr>
+      <tr><td class="f">setPointerCapture</td><td>Keeps sending events to the title bar even when the cursor moves off it — and it will, because people drag quickly.</td></tr>
+      <tr><td class="f">event.clientX<br>- rect.left</td><td>Remembers <em>where inside the bar</em> you grabbed it, so the window does not jump so its corner snaps to the cursor.</td></tr>
+      <tr><td class="f">Math.min(Math.max(…))</td><td>Clamps the window inside the viewport so it can never be dragged somewhere unreachable.</td></tr>
+    </table>
+  </div>
+
+  <div class="oneline">
+    <b>If you are asked what you are most proud of</b>
+    Not the features — the failure handling. The app keeps working with no internet, no key, a
+    retired model, or a reply that is not valid JSON, and it tells you honestly which of those
+    happened.
+  </div>
+
+  <div class="runfoot"><span>Small things that matter</span><span>Page 9 of 9</span></div>
+</section>
+
+<script>
+/* The same single-pass highlighter used by report.html. Comments and strings
+   are matched first so a keyword inside a string is never recoloured. */
+(function () {
+  'use strict';
+
+  var KEYWORDS = 'await|async|function|return|var|const|let|if|else|for|while|new|throw|try|catch|typeof|true|false|null|undefined';
+
+  var RULES = {
+    js: new RegExp(
+      '(\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\n]*)' +
+      '|(\'(?:\\\\.|[^\'\\\\\\n])*\'|"(?:\\\\.|[^"\\\\\\n])*")' +
+      '|\\b(' + KEYWORDS + ')\\b' +
+      '|\\b(0x[0-9a-fA-F]+|\\d+(?:\\.\\d+)?)\\b',
+      'g'
+    )
+  };
+
+  var CLASSES = { js: ['t-com', 't-str', 't-key', 't-num'] };
+
+  function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('pre[data-lang]'), function (pre) {
+    var lang = pre.getAttribute('data-lang');
+    var rule = RULES[lang];
+    if (!rule) return;
+
+    var classes = CLASSES[lang];
+    var src = pre.textContent;
+    var out = '';
+    var last = 0;
+    var m;
+
+    rule.lastIndex = 0;
+    while ((m = rule.exec(src)) !== null) {
+      out += escapeHTML(src.slice(last, m.index));
+      for (var g = 1; g < m.length; g++) {
+        if (m[g] !== undefined) {
+          out += '<span class="' + classes[g - 1] + '">' + escapeHTML(m[g]) + '</span>';
+          break;
+        }
+      }
+      last = m.index + m[0].length;
+    }
+    out += escapeHTML(src.slice(last));
+    pre.innerHTML = out;
+  });
+
+  document.documentElement.setAttribute('data-highlighted', 'true');
+}());
+</script>
+
+</body>
+</html>

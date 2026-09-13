@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  report/report.html — the printable project report for AI_tour_guide.ae
+  ----------------------------------------------------------------------------
+  WHAT THIS IS
+  The source for the Artificial Intelligence activity report PDF. It is laid
+  out as fixed A4 pages and rendered to PDF with headless Chrome, so the file
+  stays editable: change the text here, re-export, and the PDF updates.
+
+  STRUCTURE
+  Pages 1-5 follow the activity format exactly (Cover, Aim and Concept,
+  Webpage Design Plan, Screenshots, Reflection). Pages A1-A4 are an appendix
+  holding the code and the methods, so the required format is never disturbed
+  by the extra material.
+
+  PRINT NOTES
+  The palette is inverted for paper: the screen app is dark navy, but a report
+  that is mostly black ink is unpleasant to print and hard to read, so the body
+  is white with darker variants of the same navy, gold and purple. Only the
+  cover band and section rules stay dark.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI_tour_guide.ae — Project Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* --- Print geometry ------------------------------------------------------ */
+
+@page { size: A4; margin: 0; }
+
+* { box-sizing: border-box; }
+
+:root {
+  --navy: #161826;
+  --ink: #1f2130;
+  --body: #3c4052;
+  --muted: #6b7086;
+  --line: #d9dbe4;
+  --line-soft: #ecedf2;
+  --paper: #ffffff;
+  --tint: #f6f7fa;
+
+  /* Darker variants of the app's accents: the screen values are tuned for a
+     dark background and turn to mush on white paper. */
+  --purple: #5d4fa8;
+  --purple-soft: #efedf9;
+  --gold: #8a6d1f;
+  --gold-soft: #faf4e2;
+
+  --uae-red: #c8322f;
+  --uae-green: #1f8a52;
+  --uae-white: #ffffff;
+  --uae-black: #14141a;
+
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --arabic: 'Noto Kufi Arabic', 'Segoe UI', Tahoma, sans-serif;
+}
+
+html, body { margin: 0; padding: 0; background: #8a8d99; }
+
+body {
+  font-family: var(--sans);
+  color: var(--body);
+  font-size: 9.3pt;
+  line-height: 1.46;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 15mm 14mm 13mm;
+  background: var(--paper);
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+}
+
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+/* On screen the pages get a gap and a shadow so the file is easy to proof.
+   Print drops both — the pages are the paper. */
+@media screen {
+  .page { margin-bottom: 12mm; box-shadow: 0 6px 26px rgba(0, 0, 0, 0.34); }
+}
+
+@media print {
+  html, body { background: #fff; }
+  .page { margin: 0; box-shadow: none; }
+}
+
+/* --- Running head and foot ------------------------------------------------ */
+
+.runhead {
+  position: absolute;
+  top: 8mm;
+  left: 15mm;
+  right: 15mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 2.5mm;
+  border-bottom: 0.6pt solid var(--line);
+  font-size: 7.4pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.runhead b { color: var(--ink); font-weight: 600; }
+
+.runfoot {
+  position: absolute;
+  bottom: 8mm;
+  left: 15mm;
+  right: 15mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2.5mm;
+  border-top: 0.6pt solid var(--line);
+  font-size: 7.4pt;
+  color: var(--muted);
+}
+
+.flagbar {
+  display: inline-block;
+  width: 34px;
+  height: 3px;
+  border-radius: 1px;
+  vertical-align: middle;
+  background: linear-gradient(90deg,
+    var(--uae-red) 0 25%, var(--uae-green) 25% 50%,
+    #e8e8e2 50% 75%, var(--uae-black) 75% 100%);
+}
+
+/* --- Headings ------------------------------------------------------------- */
+
+h1, h2, h3, h4 { margin: 0; color: var(--ink); font-weight: 600; line-height: 1.2; }
+
+.page-label {
+  font-size: 7.6pt;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2mm;
+}
+
+.page-title {
+  font-size: 18pt;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5mm;
+}
+
+.page-sub {
+  font-size: 8.7pt;
+  color: var(--muted);
+  margin-bottom: 4.5mm;
+  max-width: 150mm;
+}
+
+h3.sec {
+  font-size: 10.3pt;
+  margin-bottom: 1.6mm;
+  padding-left: 3.5mm;
+  border-left: 2.5pt solid var(--purple);
+}
+
+h4.sub {
+  font-size: 9.4pt;
+  color: var(--ink);
+  margin-bottom: 1.5mm;
+}
+
+.block { margin-bottom: 3.4mm; }
+.block:last-child { margin-bottom: 0; }
+
+p { margin: 0 0 2mm; }
+p:last-child { margin-bottom: 0; }
+
+strong { color: var(--ink); font-weight: 600; }
+em { font-style: italic; }
+
+/* --- Lists ---------------------------------------------------------------- */
+
+ul.clean { margin: 0; padding: 0; list-style: none; }
+
+ul.clean li {
+  position: relative;
+  padding-left: 4.5mm;
+  margin-bottom: 1.1mm;
+}
+
+ul.clean li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.9mm;
+  width: 2mm;
+  height: 2mm;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+ul.clean li:last-child { margin-bottom: 0; }
+
+ol.steps { margin: 0; padding-left: 5mm; }
+ol.steps li { margin-bottom: 1.6mm; padding-left: 1mm; }
+
+/* --- Cover ---------------------------------------------------------------- */
+
+.cover { padding: 0; display: flex; flex-direction: column; }
+
+.cover-band {
+  background: var(--navy);
+  color: #e9e9ed;
+  padding: 26mm 15mm 16mm;
+  position: relative;
+}
+
+/* The same faint mashrabiya lattice the website uses, at a weight that still
+   survives being printed on a school printer. */
+.cover-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 15px, rgba(201, 162, 39, 0.09) 15px 16px),
+    repeating-linear-gradient(-45deg, transparent 0 15px, rgba(201, 162, 39, 0.09) 15px 16px);
+}
+
+.cover-band > * { position: relative; z-index: 1; }
+
+.cover-ar {
+  font-family: var(--arabic);
+  font-size: 12pt;
+  color: #e0c184;
+  margin-bottom: 3mm;
+}
+
+.cover-kicker {
+  font-size: 8pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #a9abbd;
+  margin-bottom: 5mm;
+}
+
+.cover-title {
+  font-size: 30pt;
+  letter-spacing: -0.035em;
+  color: #fff;
+  line-height: 1.06;
+  margin-bottom: 3mm;
+}
+
+.cover-title span { color: #b9addf; font-style: italic; font-weight: 500; }
+
+.cover-tagline {
+  font-size: 10.5pt;
+  color: #c3c5d2;
+  max-width: 135mm;
+}
+
+.cover-rule {
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--uae-red) 0 12%, var(--uae-green) 12% 41.3%,
+    #dcdcd4 41.3% 70.6%, var(--uae-black) 70.6% 100%);
+  background-size: 170px 100%;
+  background-repeat: repeat-x;
+}
+
+.cover-body {
+  flex: 1;
+  padding: 16mm 15mm 14mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.meta { width: 100%; border-collapse: collapse; }
+
+.meta tr { border-bottom: 0.6pt solid var(--line); }
+.meta tr:first-child { border-top: 0.6pt solid var(--line); }
+
+.meta th {
+  width: 46mm;
+  text-align: left;
+  padding: 3.6mm 0;
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  vertical-align: middle;
+}
+
+.meta td {
+  padding: 3.6mm 0;
+  font-size: 11.5pt;
+  color: var(--ink);
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+/* --- Link blocks (QR + typed URL) ----------------------------------------- */
+
+.links {
+  margin-top: 12mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6mm;
+}
+
+.link {
+  display: flex;
+  align-items: flex-start;
+  gap: 3.5mm;
+  padding: 3.5mm;
+  border: 0.6pt solid var(--line);
+  border-radius: 2.5mm;
+  background: var(--tint);
+}
+
+/* image-rendering: pixelated keeps the module edges hard when the PNG is
+   scaled down for print — smoothing a QR code is what makes it fail to scan. */
+.qr {
+  width: 21mm;
+  height: 21mm;
+  flex: none;
+  image-rendering: pixelated;
+  background: #fff;
+  border-radius: 1mm;
+}
+
+.link-text { min-width: 0; }
+
+.link-label {
+  display: block;
+  font-size: 7.4pt;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2mm;
+}
+
+.link-url {
+  display: block;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 7pt;
+  line-height: 1.4;
+  color: var(--purple);
+  word-break: normal;
+  overflow-wrap: anywhere;
+  margin-bottom: 1.4mm;
+}
+
+.link-note {
+  display: block;
+  font-size: 7.8pt;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.cover-foot {
+  margin-top: auto;
+  padding-top: 6mm;
+  border-top: 0.6pt solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 8.4pt;
+  color: var(--muted);
+}
+
+.stack { display: flex; gap: 2.5mm; flex-wrap: wrap; }
+
+.pill {
+  padding: 1.4mm 3mm;
+  border: 0.6pt solid var(--line);
+  border-radius: 20px;
+  font-size: 7.8pt;
+  color: var(--body);
+  background: var(--tint);
+}
+
+/* --- Two-column helper ---------------------------------------------------- */
+
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5mm; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+
+.card {
+  border: 0.6pt solid var(--line);
+  border-radius: 2.5mm;
+  padding: 3mm;
+  background: var(--tint);
+}
+
+.card h4 { margin-bottom: 1.2mm; font-size: 8.7pt; }
+.card p { font-size: 8.1pt; color: var(--body); }
+
+.card-n {
+  display: block;
+  font-size: 7.4pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5mm;
+}
+
+/* --- Callout -------------------------------------------------------------- */
+
+.callout {
+  border-left: 2.5pt solid var(--gold);
+  background: var(--gold-soft);
+  padding: 2.8mm 3.2mm;
+  border-radius: 0 2mm 2mm 0;
+  font-size: 8.4pt;
+}
+
+.callout.ai { border-left-color: var(--purple); background: var(--purple-soft); }
+
+/* --- Code ----------------------------------------------------------------- */
+
+figure.code { margin: 0 0 3mm; }
+
+figure.code figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4mm;
+  padding: 1.8mm 3mm;
+  border: 0.6pt solid var(--line);
+  border-bottom: 0;
+  border-radius: 2mm 2mm 0 0;
+  background: var(--ink);
+  color: #cfd2de;
+  font-size: 7.6pt;
+  letter-spacing: 0.04em;
+}
+
+figure.code figcaption b { color: #fff; font-weight: 600; }
+figure.code figcaption span { color: #9ea3b8; font-family: var(--mono); font-size: 7.2pt; }
+
+pre {
+  margin: 0;
+  padding: 2.4mm 3mm;
+  border: 0.6pt solid var(--line);
+  border-radius: 0 0 2mm 2mm;
+  background: #fbfbfd;
+  font-family: var(--mono);
+  font-size: 6.9pt;
+  line-height: 1.4;
+  color: #24273a;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.note {
+  margin-top: 1.2mm;
+  font-size: 7.6pt;
+  color: var(--muted);
+}
+
+/* Token colours written by the highlighter script at the bottom of the file. */
+.t-com { color: #7c8296; font-style: italic; }
+.t-str { color: #8a5a1f; }
+.t-key { color: #6a3fb5; font-weight: 500; }
+.t-num { color: #1f6b58; }
+.t-tag { color: #6a3fb5; }
+.t-att { color: #8a5a1f; }
+.t-prop { color: #1f4f8a; }
+
+/* --- Wireframes ----------------------------------------------------------- */
+
+.wire {
+  border: 0.8pt solid var(--ink);
+  border-radius: 2mm;
+  padding: 2.5mm;
+  background: #fff;
+}
+
+.wire-title {
+  font-size: 7.6pt;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2mm;
+}
+
+.wbox {
+  border: 0.6pt dashed #9aa0b4;
+  border-radius: 1.2mm;
+  padding: 1.8mm 2mm;
+  margin-bottom: 1.6mm;
+  font-size: 7.4pt;
+  color: var(--body);
+  background: #fafbfd;
+  text-align: center;
+}
+
+.wbox:last-child { margin-bottom: 0; }
+.wbox.solid { background: var(--navy); color: #e9e9ed; border-style: solid; border-color: var(--navy); }
+.wbox.gold { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+.wbox.tall { padding-block: 6mm; }
+.wbox.xtall { padding-block: 11mm; }
+
+.wrow { display: grid; gap: 1.6mm; margin-bottom: 1.6mm; }
+.wrow.c2 { grid-template-columns: 1fr 1fr; }
+.wrow.c3 { grid-template-columns: 1fr 1fr 1.25fr; }
+.wrow.c4 { grid-template-columns: repeat(4, 1fr); }
+.wrow > .wbox { margin-bottom: 0; }
+
+/* --- Screenshot placeholders ---------------------------------------------- */
+
+.shot { display: flex; flex-direction: column; }
+
+.shot-frame {
+  flex: 1;
+  border: 1pt dashed #a7adc0;
+  border-radius: 2.5mm;
+  background:
+    repeating-linear-gradient(45deg, #fcfcfe 0 6px, #f4f5f9 6px 12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #8e94a8;
+  padding: 4mm;
+}
+
+.shot-frame b {
+  display: block;
+  font-size: 9pt;
+  color: #6b7086;
+  font-weight: 600;
+  margin-bottom: 1mm;
+}
+
+.shot-frame small { font-size: 7.6pt; line-height: 1.45; }
+
+.shot-cap {
+  margin-top: 2mm;
+  padding-top: 1.6mm;
+  border-top: 0.6pt solid var(--line);
+  font-size: 8.2pt;
+  color: var(--body);
+  /* A shared minimum so a three-line caption does not shrink its own frame
+     and knock the row out of alignment with the one beside it. */
+  min-height: 13mm;
+}
+
+.shot-cap b { color: var(--ink); font-weight: 600; }
+
+/* --- Small table ---------------------------------------------------------- */
+
+table.grid { width: 100%; border-collapse: collapse; font-size: 7.9pt; }
+
+table.grid th {
+  text-align: left;
+  padding: 1.8mm 2.2mm;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 7.8pt;
+  letter-spacing: 0.06em;
+}
+
+table.grid td {
+  padding: 1.7mm 2.2mm;
+  border-bottom: 0.6pt solid var(--line-soft);
+  vertical-align: top;
+}
+
+table.grid tr:nth-child(even) td { background: #fafbfd; }
+table.grid code { font-family: var(--mono); font-size: 7.8pt; color: var(--purple); }
+
+.swatch {
+  display: inline-block;
+  width: 3.5mm;
+  height: 3.5mm;
+  border-radius: 0.8mm;
+  border: 0.4pt solid rgba(0,0,0,0.18);
+  vertical-align: -0.6mm;
+  margin-right: 1.5mm;
+}
+</style>
+</head>
+<body>
+
+<!-- ======================================================================
+     PAGE 1 — COVER
+     ================================================================== -->
+<section class="page cover">
+  <div class="cover-band">
+    <p class="cover-ar" dir="rtl" lang="ar">دليلك الذكي إلى الإمارات</p>
+    <p class="cover-kicker">Artificial Intelligence · Activity Report</p>
+    <h1 class="cover-title">AI_tour_guide.ae<br><span>Smart UAE AI Tourism Assistant</span></h1>
+    <p class="cover-tagline">
+      A web application that turns four trip settings into a full day-by-day
+      United Arab Emirates itinerary — priced in dirhams, refinable by chat,
+      plotted on a map and exported as a PDF.
+    </p>
+  </div>
+  <div class="cover-rule"></div>
+
+  <div class="cover-body">
+    <table class="meta">
+      <tr><th>Activity Title</th><td>AI_tour_guide.ae — Smart UAE AI Tourism Assistant</td></tr>
+      <tr><th>Student Name</th><td>Ashwanth Vijay</td></tr>
+      <tr><th>Grade &amp; Section</th><td>Grade 9 – C</td></tr>
+      <tr><th>Roll Number</th><td>9</td></tr>
+      <tr><th>Subject</th><td>Artificial Intelligence</td></tr>
+      <tr><th>Academic Year</th><td>2026 – 2027</td></tr>
+    </table>
+
+    <!-- Both links appear as a scannable code AND as typed-out text: a QR
+         code is useless to anyone reading this on paper without a phone, and
+         a long URL is tedious to type. Giving both covers either reader. -->
+    <div class="links">
+      <div class="link">
+        <img class="qr" src="qr-site.png" alt="QR code linking to the live website.">
+        <div class="link-text">
+          <span class="link-label">Live website</span>
+          <a class="link-url" href="https://ai-tour-guide-ae.netlify.app">ai-tour-guide-ae.netlify.app</a>
+          <span class="link-note">The working app — open the studio and generate a plan.</span>
+        </div>
+      </div>
+      <div class="link">
+        <img class="qr" src="qr-github.png" alt="QR code linking to the GitHub repository.">
+        <div class="link-text">
+          <span class="link-label">Source code</span>
+          <a class="link-url" href="https://github.com/ashwanthvijay1234-debug/AI_tour_guide.ae">github.com/ashwanthvijay1234-debug<br>/AI_tour_guide.ae</a>
+          <span class="link-note">Every file in this report, and the full commit history.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-foot">
+      <div>
+        <div class="stack" style="margin-bottom:3mm">
+          <span class="pill">HTML</span>
+          <span class="pill">CSS</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">Google Gemini API</span>
+          <span class="pill">jsPDF</span>
+          <span class="pill">Google Maps</span>
+        </div>
+        <div>No frameworks · No build step · Runs from a file</div>
+      </div>
+      <div style="text-align:right">
+        <span class="flagbar"></span>
+        <div style="margin-top:2mm">Aligned to <b>UAE Vision 2071</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     PAGE 2 — AIM AND CONCEPT
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>AI_tour_guide.ae</b> · Artificial Intelligence Activity</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Page 2</p>
+  <h2 class="page-title">Aim and Concept</h2>
+  <p class="page-sub">What the project sets out to do, the problem it answers, and why that matters here.</p>
+
+  <div class="block">
+    <h3 class="sec">Aim</h3>
+    <p>
+      To build a working Artificial Intelligence web application that solves a real problem for
+      visitors to the United Arab Emirates, and to show how <strong>generative AI</strong> and
+      <strong>Natural Language Processing</strong> can be applied to tourism — not as a chatbot
+      bolted onto a page, but as the engine that produces the product itself.
+    </p>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Chosen Topic</h3>
+    <p>
+      <strong>Smart tourism.</strong> A generative UAE travel planner that writes a full
+      day-by-day itinerary from four settings — destination, trip length, budget and interests —
+      then lets the user refine it by talking to it in plain English.
+    </p>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Problem Statement</h3>
+    <p><em>A printed guidebook cannot know who is reading it.</em></p>
+    <div class="cols2" style="margin-top:3mm">
+      <div class="card">
+        <span class="card-n">Not personal</span>
+        <p>A student on AED 2,000 and a honeymoon couple get the same 300 pages, and must filter it themselves.</p>
+      </div>
+      <div class="card">
+        <span class="card-n">Not flexible</span>
+        <p>A 44 °C afternoon or a tired toddler rewrites the day; the printed page cannot move to meet it.</p>
+      </div>
+      <div class="card">
+        <span class="card-n">Not current</span>
+        <p>Prices, opening hours and whole attractions change faster than editions are reprinted.</p>
+      </div>
+      <div class="card">
+        <span class="card-n">Not efficient</span>
+        <p>Comparing maps, prices and timings across seven emirates takes an evening — and still over-drives.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">AI Solution Proposed</h3>
+    <p>A four-stage pipeline. The code for every stage is in the appendix.</p>
+    <table class="grid" style="margin-top:2.5mm">
+      <tr><th style="width:8mm">#</th><th style="width:44mm">Stage</th><th>What happens</th></tr>
+      <tr><td><b>01</b></td><td><b>Understanding preferences</b></td><td>The four settings become a natural-language brief. NLP reads what is <em>implied</em> as well as typed — “family” means shorter days and earlier evenings.</td></tr>
+      <tr><td><b>02</b></td><td><b>Prompt engineering</b></td><td>A system instruction fixes the role, the currency, the pacing rules and the exact JSON shape. Constraining the output turns a chatty model into a reliable component.</td></tr>
+      <tr><td><b>03</b></td><td><b>Generative reasoning</b></td><td>Gemini balances geography, timing and money token by token, writing a plan that did not exist before. Nothing is retrieved from a list of stored tours.</td></tr>
+      <tr><td><b>04</b></td><td><b>Structured rendering</b></td><td>The reply is parsed back into data, drawn on screen, typeset into a PDF and plotted on a map.</td></tr>
+    </table>
+    <div class="callout ai" style="margin-top:3mm">
+      <strong>Two modes, and the app always says which is running.</strong> With no API key an
+      offline planner built into the JavaScript writes the itinerary, so the project works with no
+      internet at all; with a key, Google Gemini writes it. A badge on every plan names the engine
+      that produced it, so <em>“is the AI actually running?”</em> can always be answered.
+    </div>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Importance to UAE</h3>
+    <div class="cols2">
+      <div>
+        <ul class="clean">
+          <li><strong>Economy</strong> — tourism is a pillar of growth beyond oil, and a country that is easier to plan a trip to is easier to choose.</li>
+          <li><strong>Sustainability</strong> — grouping each day's stops by area cuts driving, and with it fuel, emissions and time lost in traffic.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="clean">
+          <li><strong>Culture</strong> — the model must include Emirati heritage in every plan, not only malls and towers.</li>
+          <li><strong>Access</strong> — LLMs already work in Arabic, Hindi, Mandarin and Russian, so no separate edition need be printed.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:2.5mm">
+      This serves <strong>UAE Vision 2071</strong> and the <strong>National AI Strategy 2031</strong>,
+      which names tourism among the sectors AI should serve.
+    </p>
+  </div>
+
+  <div class="runfoot"><span>Aim and Concept</span><span>Page 2 of 9</span></div>
+</section>
+  <!-- ======================================================================
+       PAGE 3 — WEBPAGE DESIGN PLAN
+       The sketch frame is left empty on purpose: a hand-drawn plan is pasted
+       in here, the same way the screenshots go onto page 4.
+       ================================================================== -->
+  <section class="page">
+    <div class="runhead"><span><b>AI_tour_guide.ae</b> · Artificial Intelligence Activity</span><span>Ashwanth Vijay · 9-C</span></div>
+
+    <p class="page-label">Page 3</p>
+    <h2 class="page-title">Webpage Design Plan</h2>
+    <p class="page-sub">The rough sketch drawn before any code was written, and the file structure it turned into.</p>
+
+    <div class="block">
+      <h3 class="sec">Layout Sketch</h3>
+      <div class="shot" style="height:118mm">
+        <div class="shot-frame">
+          <b>Paste the hand-drawn layout sketch here</b>
+          <small>A rough sketch of the two pages is enough — boxes and labels, not a finished design.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="cols2">
+      <div class="block">
+        <h4 class="sub">What the sketch plans</h4>
+        <ul class="clean">
+          <li><strong>Page 1 — landing.</strong> Header, hero, a mock of the app, then numbered sections and a footer.</li>
+          <li><strong>Page 2 — the studio.</strong> An app bar over three columns: trip setup, AI chat, and the output tabs.</li>
+          <li><strong>Output tabs.</strong> Itinerary, PDF and Map share one panel area.</li>
+          <li><strong>Responsive.</strong> The three columns stack into one below 1040px.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4 class="sub">The files it became</h4>
+<pre style="border-radius:2mm">index.html     landing page
+studio.html    the application
+
+css/tokens.css   colours, fonts, spacing
+css/base.css     reset + shared controls
+css/index.css    landing-page layout
+css/studio.css   app layout
+
+js/index.js      header, scroll, reveals
+js/studio.js     planner, AI, chat, map, PDF</pre>
+      </div>
+    </div>
+
+    <div class="runfoot"><span>Webpage Design Plan</span><span>Page 3 of 9</span></div>
+  </section>
+
+
+
+<!-- ======================================================================
+     PAGE 4 — SCREENSHOTS  (frames left empty on purpose)
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>AI_tour_guide.ae</b> · Artificial Intelligence Activity</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Page 4</p>
+  <h2 class="page-title">Screenshots</h2>
+  <p class="page-sub">Paste each screenshot into the frame below it. The captions are already written.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6mm;height:240mm">
+
+    <div class="shot">
+      <div class="shot-frame">
+        <b>1 · HTML Code</b>
+        <small>Paste a screenshot of <b>studio.html</b> open in the editor<br>(the three-column shell or the output tabs)</small>
+      </div>
+      <p class="shot-cap"><b>Fig. 1 —</b> The HTML for the studio: an ARIA tablist for the Itinerary, PDF and Map panels, with the trip-setup form on the left.</p>
+    </div>
+
+    <div class="shot">
+      <div class="shot-frame">
+        <b>2 · CSS Code</b>
+        <small>Paste a screenshot of <b>css/tokens.css</b> or <b>css/studio.css</b><br>(the custom properties are the clearest part to show)</small>
+      </div>
+      <p class="shot-cap"><b>Fig. 2 —</b> The design system in CSS custom properties — one source of truth for colour, type and spacing across both pages.</p>
+    </div>
+
+    <div class="shot">
+      <div class="shot-frame">
+        <b>3 · Webpage Design</b>
+        <small>Paste a screenshot of the <b>landing page</b><br>(the hero, or the gallery of UAE photographs)</small>
+      </div>
+      <p class="shot-cap"><b>Fig. 3 —</b> The landing page: an animated CSS sky layered over the Dubai skyline, explaining the project before the user opens the studio.</p>
+    </div>
+
+    <div class="shot">
+      <div class="shot-frame">
+        <b>4 · Final Output</b>
+        <small>Paste a screenshot of a <b>generated itinerary</b><br>(the studio with a finished plan, or the exported PDF)</small>
+      </div>
+      <p class="shot-cap"><b>Fig. 4 —</b> The final output: a complete day-by-day itinerary with time windows, reasons and dirham costs, ready to export as a PDF.</p>
+    </div>
+
+  </div>
+
+  <div class="runfoot"><span>Screenshots</span><span>Page 4 of 9</span></div>
+</section>
+
+<!-- ======================================================================
+     PAGE 5 — REFLECTION
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>AI_tour_guide.ae</b> · Artificial Intelligence Activity</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Page 5</p>
+  <h2 class="page-title">Reflection</h2>
+  <p class="page-sub">What the build taught me, what went wrong on the way, and what I would take to the next project.</p>
+
+  <div class="block">
+    <h3 class="sec">What I Learned</h3>
+    <ul class="clean">
+      <li><strong>A language model becomes useful when you constrain it.</strong> Asked an open question it writes pleasant paragraphs. Pinned to a role, a currency, a pacing rule and an exact JSON shape, it becomes a component I can build a product on. Prompt engineering turned out to be the real engineering in this project.</li>
+      <li><strong>Never trust a model's output format.</strong> Even when told “JSON only, no markdown fences”, it sometimes returns fences or a sentence first. The parser strips fences, retries on the widest <code style="font-family:var(--mono)">{…}</code> substring, and renders prose safely rather than failing.</li>
+      <li><strong>Never trust model output as markup either.</strong> Every element is built with <code style="font-family:var(--mono)">createElement</code> and <code style="font-family:var(--mono)">textContent</code>, never <code style="font-family:var(--mono)">innerHTML</code>, so a stop title containing a script tag becomes a badly-named stop instead of running code.</li>
+      <li><strong>Honesty has to be designed in.</strong> Both modes produce something that looks like an itinerary, so I added a provenance badge and a Test key button that makes one real request and reports the failure instead of hiding it.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Challenges Faced</h3>
+    <table class="grid">
+      <tr><th style="width:40mm">Challenge</th><th>How I solved it</th></tr>
+      <tr>
+        <td><b>Model IDs kept expiring</b></td>
+        <td>I had hard-coded model names. Google retired them, every call returned 404, and the app silently fell back to the offline planner — with a valid key in the box. Now the app asks the API which models the key can really call and filters its preference list against that.</td>
+      </tr>
+      <tr>
+        <td><b>Errors blamed the wrong model</b></td>
+        <td>The fallback chain reported the <em>last</em> error, so a bad key surfaced as “gemini-1.5-pro not found” — a model the user never picked. It now keeps the <em>first</em> error, from the model actually chosen.</td>
+      </tr>
+      <tr>
+        <td><b>The same plan every time</b></td>
+        <td>Two causes. The counter seeding the shuffle reset on every page load, so a reload gave a byte-identical plan; it now persists. And the place pool was smaller than the trip needed, so every place was used every run — the pool grew to 103 real UAE locations.</td>
+      </tr>
+      <tr>
+        <td><b>“Cheaper” froze the plan</b></td>
+        <td>Sorting by cost always picks the same cheapest stops. Adding a seeded jitter to the prices keeps the trip cheap while varying which cheap places are chosen.</td>
+      </tr>
+      <tr>
+        <td><b>Empty days on long trips</b></td>
+        <td>A 14-day trip needs 84 stops and the pool holds fewer, so later days printed blank. The planner now cycles the pool instead, which is what a real fortnight looks like anyway.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Skills Developed</h3>
+    <div class="cols3">
+      <div class="card">
+        <span class="card-n">Technical</span>
+        <p>Semantic HTML, CSS custom properties and responsive layout, modern JavaScript with <code style="font-family:var(--mono)">async/await</code>, <code style="font-family:var(--mono)">fetch</code> and the DOM API.</p>
+      </div>
+      <div class="card">
+        <span class="card-n">AI</span>
+        <p>Prompt engineering, constraining output to a schema, temperature, model fallback chains, and reading an API's error responses properly.</p>
+      </div>
+      <div class="card">
+        <span class="card-n">Engineering</span>
+        <p>Debugging from symptoms, defensive coding, accessibility with ARIA, keeping secrets out of a repository, and version control with Git.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3 class="sec">Conclusion</h3>
+    <p>
+      The project does what it set out to do: four answers become a complete, priced,
+      mapped and printable UAE itinerary in under ten seconds, and the plan can be argued
+      with in plain English afterwards. More importantly, it answers the question the
+      subject is really about — <em>what is AI actually good for?</em>
+    </p>
+    <div class="callout ai" style="margin-top:3mm">
+      Generative AI is most useful when it is <strong>given structure</strong>: a clear role,
+      real constraints and a defined output. Left open-ended it writes nice paragraphs. Given
+      a role, a currency, a pacing rule and an exact JSON shape, it becomes a reliable part of
+      a working product — and that is the finding I would carry into the next build.
+    </div>
+  </div>
+
+  <div class="runfoot"><span>Reflection</span><span>Page 5 of 9</span></div>
+</section>
+
+<!-- ======================================================================
+     APPENDIX A1 — STRUCTURE AND STYLING
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>Appendix</b> · Code and Methods</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Appendix A1</p>
+  <h2 class="page-title">Structure and Styling</h2>
+  <p class="page-sub">How the markup and the design system are written. All code is taken directly from the project files.</p>
+
+  <figure class="code">
+    <figcaption><b>Accessible tab panels</b><span>studio.html</span></figcaption>
+<pre data-lang="html">&lt;div class="tabs" role="tablist" aria-label="Output views"&gt;
+  &lt;button class="tab" type="button" role="tab" id="tab-itinerary"
+          aria-controls="panel-itinerary" aria-selected="true"&gt;Itinerary&lt;/button&gt;
+  &lt;button class="tab" type="button" role="tab" id="tab-pdf"
+          aria-controls="panel-pdf" aria-selected="false" tabindex="-1"&gt;PDF&lt;/button&gt;
+  &lt;button class="tab" type="button" role="tab" id="tab-map"
+          aria-controls="panel-map" aria-selected="false" tabindex="-1"&gt;Map&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="panel-wrap" role="tabpanel" id="panel-itinerary"
+     aria-labelledby="tab-itinerary" tabindex="0"&gt;
+  &lt;div class="scroller" id="itineraryOut"&gt;&lt;/div&gt;
+&lt;/div&gt;</pre>
+    <p class="note">
+      <strong>Method — ARIA tabs.</strong> <code style="font-family:var(--mono)">role</code>,
+      <code style="font-family:var(--mono)">aria-controls</code> and
+      <code style="font-family:var(--mono)">aria-selected</code> tell a screen reader that these
+      three buttons switch one region, and the hidden attribute on inactive panels keeps them out
+      of the reading order.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>The design system as custom properties</b><span>css/tokens.css</span></figcaption>
+<pre data-lang="css">:root {
+  /* Core four */
+  --color-bg: #161826;        /* deep navy — the night sky  */
+  --color-surface: #232532;   /* cards and panels           */
+  --color-text: #e9e9ed;      /* warm off-white             */
+  --color-accent: #9184d9;    /* purple — reserved for AI   */
+
+  /* Sand ramp — the UAE half of the palette */
+  --sand-300: #e0c184;
+  --sand-500: #c9a227;        /* gold — heritage and place  */
+
+  /* Vertical rhythm: every spacing value is a multiple of these */
+  --leading: 28px;
+  --half: 14px;
+}</pre>
+    <p class="note">
+      <strong>Method — one source of truth.</strong> A token lives here only if its value is
+      identical on both pages, so the two stylesheets can never drift apart. Page-specific values
+      are declared at the top of that page's own stylesheet instead.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>Painting a slider's filled track from JavaScript</b><span>css/studio.css + js/studio.js</span></figcaption>
+<pre data-lang="css">input[type='range']::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg,
+    var(--color-accent) var(--fill, 50%), var(--neutral-700) var(--fill, 50%));
+}</pre>
+<pre data-lang="js" style="border-radius:0 0 2mm 2mm;border-top:0">function paintRange(input) {
+  var pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+  input.style.setProperty('--fill', pct + '%');   // CSS does the drawing
+}</pre>
+    <p class="note">
+      <strong>Method — let CSS do the work.</strong> JavaScript writes one number; the gradient
+      stop does the painting. No extra element and no layout work while the slider is dragged.
+    </p>
+  </figure>
+
+  <div class="runfoot"><span>Appendix A1 · Structure and Styling</span><span>Page 6 of 9</span></div>
+</section>
+
+<!-- ======================================================================
+     APPENDIX A2 — CALLING THE AI
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>Appendix</b> · Code and Methods</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Appendix A2</p>
+  <h2 class="page-title">Calling the AI</h2>
+  <p class="page-sub">Prompt engineering, the HTTP request to Google Gemini, and the JSON contract that makes the reply usable.</p>
+
+  <figure class="code">
+    <figcaption><b>Stage 02 — building the prompt</b><span>js/studio.js · buildPrompt()</span></figcaption>
+<pre data-lang="js">lines.push('You are an expert United Arab Emirates travel planner.');
+lines.push('- Destination: ' + cfg.destination);
+lines.push('- Duration: ' + cfg.days + ' days');
+lines.push('- Budget per person: ' + aed(cfg.budget) + ' (' + tier.name + ')');
+
+if (notes.length) {
+  lines.push('TRAVELLER NOTES, most recent last — obey these above all:');
+  notes.forEach(function (note, i) { lines.push((i + 1) + '. ' + note); });
+}
+
+lines.push('RULES');
+lines.push('- Group each day geographically to minimise travel. Name real UAE places.');
+lines.push('- Respect UAE realities: summer midday heat, Friday prayer timings,');
+lines.push('  modest dress at mosques, Ramadan hours, drive times between emirates.');
+lines.push('- 4 to 6 stops per day, each with a time window, a reason and an AED cost.');
+
+lines.push('Reply with ONLY valid JSON. No markdown fences. Exactly this shape:');
+lines.push('{"title":"","summary":"","days":[{"day":1,"theme":"","stops":' +
+           '[{"time":"09:00 - 11:00","title":"","detail":"","cost":"AED 120"}]}],' +
+           '"tips":[""],"estimatedTotal":"AED 5,400"}');</pre>
+    <p class="note">
+      <strong>Method — prompt engineering.</strong> The role, currency, pacing rules and exact
+      output schema are all fixed in the prompt. This is what turns a conversational model into a
+      component the rest of the program can rely on.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>The request body</b><span>js/studio.js · generate()</span></figcaption>
+<pre data-lang="js">var body = {
+  contents: [{ role: 'user', parts: [{ text: buildPrompt(cfg, state.refinements) }] }],
+  generationConfig: {
+    temperature: 0.9,                      // high enough to vary between runs
+    responseMimeType: 'application/json'   // ask the API itself for JSON
+  }
+};</pre>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>The API call itself</b><span>js/studio.js · callModel()</span></figcaption>
+<pre data-lang="js">var API = 'https://generativelanguage.googleapis.com/v1beta';
+
+async function callModel(key, model, body) {
+  var res = await fetch(
+    API + '/models/' + encodeURIComponent(model) +
+    ':generateContent?key=' + encodeURIComponent(key),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }
+  );
+
+  var data = null;
+  try { data = await res.json(); } catch (err) { data = null; }
+
+  if (!res.ok) throw httpError(res, data);   // surface Google's own message
+
+  var parts = data.candidates[0].content.parts;
+  var text = parts.map(function (p) { return p.text || ''; }).join('').trim();
+
+  if (!text) throw new Error('Empty response from ' + model);
+  return text;
+}</pre>
+    <p class="note">
+      <strong>Method — a direct browser call.</strong> There is no backend, so the request goes from
+      the user's own browser straight to Google. The key is stored only in that browser's
+      <code style="font-family:var(--mono)">localStorage</code> and is never committed.
+    </p>
+  </figure>
+
+  <div class="runfoot"><span>Appendix A2 · Calling the AI</span><span>Page 7 of 9</span></div>
+</section>
+
+<!-- ======================================================================
+     APPENDIX A3 — MAKING IT RELIABLE
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>Appendix</b> · Code and Methods</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Appendix A3</p>
+  <h2 class="page-title">Making It Reliable</h2>
+  <p class="page-sub">Three defences: surviving retired models, surviving malformed replies, and surviving the model's own text.</p>
+
+  <figure class="code">
+    <figcaption><b>Walking a fallback chain of models</b><span>js/studio.js · callWithFallback()</span></figcaption>
+<pre data-lang="js">var RETRYABLE = { 404: true, 429: true, 500: true, 503: true, 504: true };
+
+async function callWithFallback(key, chain, body, onHop) {
+  var firstError = null;
+
+  for (var i = 0; i &lt; chain.length; i++) {
+    try {
+      var text = await callModel(key, chain[i], body);
+      return { text: text, model: chain[i], fellBack: i &gt; 0 };
+    } catch (err) {
+      // Keep the FIRST failure, never the last: it came from the model the
+      // user actually chose, so it is the one worth reporting.
+      if (!firstError) firstError = err;
+
+      if (!RETRYABLE[err.status] || i === chain.length - 1) throw firstError;
+
+      onHop(chain[i], chain[i + 1]);   // tell the user in the chat
+      await sleep(400);
+    }
+  }
+}</pre>
+    <p class="note">
+      <strong>Method — never hard-code model names.</strong> Before this runs, the app asks
+      <code style="font-family:var(--mono)">GET /models</code> which models the key can actually
+      call and filters its preference list against the answer. An earlier version had fixed model
+      IDs; Google retired them and every request returned 404.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>Parsing a reply that may not be clean JSON</b><span>js/studio.js · parseJSON()</span></figcaption>
+<pre data-lang="js">function parseJSON(text) {
+  var cleaned = String(text)
+    .replace(/^\s*```(?:json)?\s*/i, '')   // strip an opening markdown fence
+    .replace(/\s*```\s*$/, '')             // and a closing one
+    .trim();
+
+  try { return JSON.parse(cleaned); } catch (err) { /* fall through */ }
+
+  // Second attempt: the widest {...} substring, for when the model wrote a
+  // sentence before the JSON.
+  var first = cleaned.indexOf('{');
+  var last = cleaned.lastIndexOf('}');
+  if (first !== -1 &amp;&amp; last &gt; first) {
+    try { return JSON.parse(cleaned.slice(first, last + 1)); } catch (err) {}
+  }
+
+  return null;   // caller renders the prose safely instead of failing
+}</pre>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>Rendering model output safely</b><span>js/studio.js · el()</span></figcaption>
+<pre data-lang="js">// Every element in the output is built this way and never with innerHTML,
+// because the content comes from a language model. A model that emits
+// "&lt;img onerror=...&gt;" as a stop title must produce a badly-named stop,
+// not a running script.
+function el(tag, className, text) {
+  var node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined &amp;&amp; text !== null) node.textContent = String(text);
+  return node;
+}</pre>
+    <p class="note">
+      <strong>Method — treat AI output as untrusted input.</strong> This is the same principle as
+      escaping anything typed by a user: the text is displayed, never executed.
+    </p>
+  </figure>
+
+  <div class="runfoot"><span>Appendix A3 · Making It Reliable</span><span>Page 8 of 9</span></div>
+</section>
+
+<!-- ======================================================================
+     APPENDIX A4 — OFFLINE PLANNER AND PDF EXPORT
+     ================================================================== -->
+<section class="page">
+  <div class="runhead"><span><b>Appendix</b> · Code and Methods</span><span>Ashwanth Vijay · 9-C</span></div>
+
+  <p class="page-label">Appendix A4</p>
+  <h2 class="page-title">Offline Planner and PDF Export</h2>
+  <p class="page-sub">The parts that work with no internet at all, and the document the user walks away with.</p>
+
+  <figure class="code">
+    <figcaption><b>A seeded random number generator</b><span>js/studio.js · seeded()</span></figcaption>
+<pre data-lang="js">function seeded(seed) {
+  // Knuth multiplicative hash spreads small consecutive seeds (1, 2, 3...)
+  // across the whole 32-bit range, then a linear congruential generator
+  // steps through it.
+  var s = (Math.imul(seed ^ 0x9e3779b9, 2654435761) &gt;&gt;&gt; 0) || 1;
+  return function () {
+    s = (Math.imul(s, 1664525) + 1013904223) &gt;&gt;&gt; 0;
+    return s / 4294967296;
+  };
+}
+
+function shuffled(list, rnd) {                 // Fisher-Yates
+  var a = list.slice();
+  for (var i = a.length - 1; i &gt; 0; i--) {
+    var j = Math.floor(rnd() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}</pre>
+    <p class="note">
+      <strong>Method — seeded, not random.</strong> The planner is a pure function, so pressing
+      Generate twice used to return an identical plan. A run counter now feeds this generator, and
+      because it is <em>seeded</em> rather than <code style="font-family:var(--mono)">Math.random()</code>,
+      one seed always produces one ordering — the behaviour stays reproducible and testable.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>Reacting to the chat without a model</b><span>js/studio.js · offlinePlan()</span></figcaption>
+<pre data-lang="js">var RX_LIGHTER = /toddler|kid|child|family|slow|light|relax|tired|elderly/i;
+var RX_CHEAPER = /cheap|budget|less|afford|save/i;
+var RX_FOOD    = /food|eat|dining|restaurant|cuisine/i;
+
+var lighter = RX_LIGHTER.test(joined);   // fewer stops per day
+var cheaper = RX_CHEAPER.test(joined);   // bias the pool toward free stops
+var perDayStops = perDay &gt; 2000 ? 6 : (perDay &gt; 700 ? 5 : 4);
+if (lighter) perDayStops = 3;</pre>
+    <p class="note">
+      <strong>Method — and its honest limit.</strong> This is pattern matching, not understanding,
+      and the app says so in the chat. Only the Gemini path genuinely comprehends a note like
+      “make day 4 lighter, we have a toddler”.
+    </p>
+  </figure>
+
+  <figure class="code">
+    <figcaption><b>Typesetting the itinerary as a PDF</b><span>js/studio.js · buildPDF()</span></figcaption>
+<pre data-lang="js">var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+
+doc.setFillColor(22, 24, 38);                 // the navy header band
+doc.rect(0, 0, pageW, 116, 'F');
+doc.setTextColor(145, 132, 217);              // the plan title in purple
+doc.text(plan.title, margin, 94);
+
+function need(height) {                       // page-break awareness
+  if (y + height &lt;= pageH - 56) return;
+  doc.addPage();
+  y = margin + 18;
+}
+
+// Preview the exact file that will download, then release the old one.
+if (state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
+state.pdfUrl = URL.createObjectURL(doc.output('blob'));
+pdfFrame.src = state.pdfUrl + '#view=FitH';</pre>
+    <p class="note">
+      <strong>Method — real text, not a screenshot.</strong> The document is laid out line by line,
+      so the output is selectable and searchable. <code style="font-family:var(--mono)">need()</code>
+      asks for room before drawing a block, so a day heading never lands alone at the foot of a page.
+    </p>
+  </figure>
+
+  <div class="runfoot"><span>Appendix A4 · Offline Planner and PDF Export</span><span>Page 9 of 9</span></div>
+</section>
+
+<script>
+/* ---------------------------------------------------------------------------
+   A very small syntax highlighter.
+
+   The code blocks are written as plain escaped text so they stay readable and
+   correct in the source. This runs once before printing and wraps comments,
+   strings, keywords and numbers in coloured spans.
+
+   It works in a SINGLE regular-expression pass, with comments and strings
+   matched first. That ordering matters: a two-pass highlighter would happily
+   colour the word "for" inside a string, or a quote mark inside a comment.
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var KEYWORDS = 'await|async|function|return|var|const|let|if|else|for|while|new|throw|try|catch|typeof|true|false|null|undefined';
+
+  var RULES = {
+    js: new RegExp(
+      '(\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\n]*)' +                 // 1 comment
+      '|(\'(?:\\\\.|[^\'\\\\\\n])*\'|"(?:\\\\.|[^"\\\\\\n])*")' + // 2 string
+      '|\\b(' + KEYWORDS + ')\\b' +                               // 3 keyword
+      '|\\b(0x[0-9a-fA-F]+|\\d+(?:\\.\\d+)?)\\b',                 // 4 number
+      'g'
+    ),
+    css: new RegExp(
+      '(\\/\\*[\\s\\S]*?\\*\\/)' +                                // 1 comment
+      '|(\'[^\']*\'|"[^"]*")' +                                   // 2 string
+      '|(--[\\w-]+)' +                                            // 3 custom property
+      '|(#[0-9a-fA-F]{3,8}\\b|\\b\\d+(?:\\.\\d+)?(?:px|%|mm|pt|em|rem|s|ms)?\\b)', // 4 value
+      'g'
+    ),
+    html: new RegExp(
+      '(&lt;!--[\\s\\S]*?--&gt;)' +                                  // 1 comment
+      '|("[^"]*")' +                                              // 2 attribute value
+      '|(&lt;\\/?[a-zA-Z][\\w-]*)',                                // 3 tag name
+      'g'
+    )
+  };
+
+  /* Which capture group maps to which colour class, per language. */
+  var CLASSES = {
+    js:   ['t-com', 't-str', 't-key', 't-num'],
+    css:  ['t-com', 't-str', 't-prop', 't-num'],
+    html: ['t-com', 't-att', 't-tag']
+  };
+
+  function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('pre[data-lang]'), function (pre) {
+    var lang = pre.getAttribute('data-lang');
+    var rule = RULES[lang];
+    if (!rule) return;
+
+    var classes = CLASSES[lang];
+    /* textContent gives the already-unescaped source; re-escape each literal
+       run as it is written back so the markup stays valid. */
+    var src = pre.textContent;
+    var out = '';
+    var last = 0;
+    var m;
+
+    rule.lastIndex = 0;
+    while ((m = rule.exec(src)) !== null) {
+      out += escapeHTML(src.slice(last, m.index));
+      for (var g = 1; g < m.length; g++) {
+        if (m[g] !== undefined) {
+          out += '<span class="' + classes[g - 1] + '">' + escapeHTML(m[g]) + '</span>';
+          break;
+        }
+      }
+      last = m.index + m[0].length;
+    }
+    out += escapeHTML(src.slice(last));
+
+    pre.innerHTML = out;
+  });
+
+  /* A flag the PDF renderer waits for, so printing never starts mid-highlight. */
+  document.documentElement.setAttribute('data-highlighted', 'true');
+}());
+</script>
+
+</body>
+</html>

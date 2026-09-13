@@ -1,0 +1,13 @@
+# Binary assets must never have line endings rewritten.
+#
+# Without this, git sniffed one of the report PDFs as text (it happens to have
+# no NUL byte early in the file) and core.autocrlf would have rewritten its
+# line endings on checkout — producing a PDF that will not open. Marking the
+# types explicitly is the only reliable fix.
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.woff  binary
+*.woff2 binary
